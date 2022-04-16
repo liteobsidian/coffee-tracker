@@ -7,10 +7,10 @@
             .text-h5.text-teal.q-my-sm {{$route.name}}
           .col-12.scroll(style='height: 80vh')
             q-list(bordered)
-              q-item(clickable outline v-for='user in users' @click='openEditUser(user)')
+              q-item(clickable outline v-for='division in divisions' @click='openEditDivision(division)')
                 q-item-section( avatar )
-                  q-icon(color='primary' :name='user.is_admin ? "manage_accounts" : "account_circle"')
-                q-item-section {{user.name}}
+                  q-icon(color='primary' name='Other Houses')
+                q-item-section {{division.name}}
                 q-item-section(side)
                   q-btn(color='primary' flat round icon ='more_vert' @click.stop)
                     q-menu(
@@ -19,9 +19,9 @@
                       auto-close
                     )
                       q-list(dense style='min-width:100px')
-                        q-item(clickable v-close-popup @click='openEditUser(user)')
+                        q-item(clickable v-close-popup @click='openEditDivision(division)')
                           q-item-section Открыть
-                        q-item(clickable v-close-popup @click='deleteUser(user.id)')
+                        q-item(clickable v-close-popup @click='deleteDivision(division.id)')
                           q-item-section Удалить
             q-page-sticky(
               position='bottom-right'
@@ -41,12 +41,12 @@
             .text-h6 {{formName}}
             q-btn(flat fab-mini color='grey' icon='close' @click='closeForm')
         q-card-section.q-pt-none.q-gutter-y-sm
-          q-input(flat dense label='Имя' v-model='item.name')
-          q-input(flat dense label='Логин' v-model='item.login')
-          q-input.q-mb-lg(flat dense label='Пароль' type='password' v-model='item.password')
-          q-checkbox(label='Администратор' v-model='item.is_admin' lazy-rules :rules='[ val => val.length >= 5 || "Пароль должен содержать не менее 6 символов" ]')
+          q-input(flat dense label='Название' v-model='item.name')
+          q-input(flat dense label='Город' v-model='item.city')
+          q-input.q-mb-lg(flat dense label='Адрес' v-model='item.address')
+          q-input.q-mb-lg(flat dense label='Коэффициент' v-model='item.factor')
           .float-right.q-mb-md
-            q-btn.q-mr-md(outline color='primary' label='Сохранить' @click='addUser')
+            q-btn.q-mr-md(outline color='primary' label='Сохранить' @click='addDivision')
             q-btn(outline color='primary' label='Отмена' @click='closeForm')
 </template>
 
@@ -59,7 +59,7 @@ export default {
   props: {
     listType: {
       type: String,
-      default: 'users'
+      default: 'divisions'
     }
   },
   data () {
@@ -68,40 +68,38 @@ export default {
       item: {
         id: '',
         name: '',
-        login: '',
-        password: '',
-        is_admin: false
+        city: '',
+        address: '',
+        factor: 0
       }
     }
   },
   computed: {
     ...mapGetters({
-      organization: 'organization/getSelected',
-      userId: 'auth/getUserId',
-      users: 'auth/getUsersList',
+      divisions: 'division/getDivisionsList',
       isAdmin: 'auth/isAdmin'
     }),
     formName () {
-      return !this.item.id ? 'Создание пользователя' : 'Изменение пользователя'
+      return !this.item.id ? 'Создание подразделения' : 'Изменение подразделения'
     }
   },
   methods: {
     ...mapActions({
-      listUsers: 'auth/listUsers',
-      pushUserInDB: 'auth/addUser',
-      editUser: 'auth/editUser',
-      deleteUser: 'auth/deleteUser'
+      listDivision: 'division/listDivisions',
+      pushDivisionInDB: 'division/addDivision',
+      editDivision: 'division/editDivision',
+      deleteDivision: 'division/deleteDivision'
     }),
     showNotify (message) {
       Notify.create(message)
     },
-    async addUser () {
-      const { name, login, password, id } = this.item
+    async addDivision () {
+      const { id, name, city, address, factor } = this.item
       const isAdd = !id
-      if (!password) this.$q.notify({ message: 'Введите пароль', type: 'info' })
-      if (name && login && password) {
+      if (!name) this.$q.notify({ message: 'Введите название подразделения', type: 'info' })
+      if (name && city && address && factor) {
         try {
-          isAdd ? await this.pushUserInDB(this.item) : await this.editUser(this.item)
+          isAdd ? await this.pushDivisionInDB(this.item) : await this.editDivision(this.item)
           this.clearForm()
           this.showDialog = false
           return
@@ -109,30 +107,30 @@ export default {
           this.$q.notify(err && err.response && err.response.data ? err.response.data.message : 'Ошибка')
         }
       }
-      console.error(`Не получилось ${isAdd ? 'добавить' : 'изменить'} пользователя`)
-      this.$q.notify({ message: `Не получилось ${isAdd ? 'добавить' : 'изменить'} пользователя`, color: 'primary' })
+      console.error(`Не получилось ${isAdd ? 'добавить' : 'изменить'} подразделение`)
+      this.$q.notify({ message: `Не получилось ${isAdd ? 'добавить' : 'изменить'} подразделение`, color: 'primary' })
     },
     clearForm () {
       this.item = {
         id: '',
         name: '',
-        login: '',
-        password: '',
-        is_admin: false
+        city: '',
+        address: '',
+        factor: 0
       }
     },
     closeForm () {
       this.showDialog = false
       this.clearForm()
     },
-    openEditUser (user) {
+    openEditDivision (division) {
       if (!this.isAdmin) return
-      this.item = user
+      this.item = division
       this.showDialog = true
     }
   },
   created () {
-    this.listUsers('')
+    this.listDivisions('')
   }
 }
 </script>
