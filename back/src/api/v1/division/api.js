@@ -30,7 +30,7 @@ export default {
       next(err)
     }
   },
-  async list (req, res, next) {
+  async divisions (req, res, next) {
     try {
       const list = await getDivisions(req.body)
       res.json({ success: true, message: 'Список подразделений успешно получен', list })
