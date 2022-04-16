@@ -1,0 +1,24 @@
+{
+"users": [ 
+   { "org":"ГУЗ ЛОКЦ",
+    "orgId": 44,
+    "lastName":"Романова",
+    "firstName":"Наталья",
+    "middleName":"Анатольевна",
+    "login":"РомановаНА",
+    "email":"romanova_05@mail.ru",
+    "mobil": "9508035416",
+    "password": "HjvfyjdfYF*!416"
+   },
+   { "org":"ГУЗ Задонская ЦРБ",
+    "orgId": 58,
+    "lastName":"Чекомазова",
+    "firstName":"Елена",
+    "middleName":"Викторовна",
+    "login":"ЧекомазоваЕВ",
+    "email":"zarp@zadonskmed.ru",
+    "mobil": "9046805997",
+    "password": "XtrjvfpjdfTF@997!"
+   }
+ ]
+}

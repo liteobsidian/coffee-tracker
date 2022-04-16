@@ -1,0 +1,34 @@
+{
+"users": [ 
+   { "org":"ГУЗ Грязинская ЦРБ",
+    "orgId":36,
+    "lastName":"Долматова",
+    "firstName":"Кристина",
+    "middleName":"Сергеевна",
+    "login":"ДолматоваКС",
+    "email":"peo@gmrb.ru",
+    "mobil": "9158557177",
+    "password": "LjkvfnjdfRC%177"
+   },
+   { "org":"ГУЗ Краснинская РБ",
+    "orgId":41,
+    "lastName":"Ковтун",
+    "firstName":"Юлия",
+    "middleName":"Анатольевна",
+    "login":"КовтунЮА",
+    "email":"kcrbecon@yandex.ru",
+    "mobil": "9030326735",
+    "password": "Rjdney>F@735"
+   },
+   { "org":"ГУЗ Долгоруковская РБ",
+    "orgId":56,
+    "lastName":"Филатова",
+    "firstName":"Валентина",
+    "middleName":"Сергеевна",
+    "login":"ФилатоваВС",
+    "email":"super.buh5@yandex.ru",
+    "mobil": "9601442410",
+    "password": "AbkfndfDC&^410"
+   }
+ ]
+}

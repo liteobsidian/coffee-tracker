@@ -1,0 +1,44 @@
+{
+"users": [ 
+   { "org":"34 ГУЗ Становлянская РБ",
+    "orgId": 34,
+    "lastName":"Панина",
+    "firstName":"Татьяна",
+    "middleName":"Николаевна",
+    "login":"ПанинаТН",
+    "email":"stctrb2009@yandex.ru",
+    "mobil": "9155595208",
+    "password": "GfgbyfNY$%208"
+   },
+   { "org":"45 ГУЗ ЛОПТД",
+    "orgId": 45,
+    "lastName":"Воробьева",
+    "firstName":"Наталья",
+    "middleName":"Владимировна",
+    "login":"ВоробьеваНВ",
+    "email":"oku_loptd@mail.ru",
+    "mobil": "9508071093",
+    "password": "Djhj,mtdfYD%&093"
+   },
+   { "org":"51 ГУЗ ЛООД",
+    "orgId": 51,
+    "lastName":"Зубарева",
+    "firstName":"Елена",
+    "middleName":"Валерьевна",
+    "login":"ЗубареваЕВ",
+    "email":"buhg@guz-lood.ru",
+    "mobil": "9103553722",
+    "password": "Pe,fhtdfTB%)722"
+   },
+   { "org":"53 ГУЗ Липецкая ГБ СМП1",
+    "orgId": 53,
+    "lastName":"Новикова",
+    "firstName":"Людмила",
+    "middleName":"Николаевна",
+    "login":"НовиковаЛН",
+    "email":"buh.novikova59@mail.ru",
+    "mobil": "9042826434",
+    "password": "YjdbrjdfKY!&434"
+   }
+ ]
+}

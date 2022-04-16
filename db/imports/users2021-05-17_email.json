@@ -1,0 +1,15 @@
+{
+  "users": [ 
+    { "org":"ГУЗ Липецкая ГП7",
+      "orgId": 42,
+      "lastName":"Крылова",
+      "firstName":"Анжелика",
+      "middleName":"Владимировна",
+      "login":"КрыловаАВ",
+      "email":"371447@mail.ru",
+      "mobil": "9525946725",
+      "password": "RhskjdfFD#^725("
+     }
+  ]
+  }
+  

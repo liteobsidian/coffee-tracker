@@ -1,0 +1,24 @@
+{
+"users": [ 
+  { "org":"ГУЗ Лебедянская центральная районная больница",
+    "orgId": 9,
+    "lastName":"Кукушкина",
+    "firstName":"Оксана",
+    "middleName":"Андреевна",
+    "login":"КукушкинаОА",
+    "email":"oksana.04.12.84.@mail.ru",
+    "mobil": "9046896171",
+    "password": "RereirbyfJF#@84!"
+   },
+   { "org":"ГУЗ Лебедянская центральная районная больница",
+    "orgId": 9,
+    "lastName":"Красинская",
+    "firstName":"Ольга",
+    "middleName":"Васильевна",
+    "login":"КрасинскаяОВ",
+    "email":"krasinskaya.nastena@mail.ru",
+    "mobil": "9155593290",
+    "password": "RhfcbycrfzJD*$290@"
+   }
+ ]
+}

@@ -1,0 +1,14 @@
+{
+"users": [ 
+  { "org":"ГУЗ Елецкая ГДБ",
+    "orgId":19,
+    "lastName":"Полякова",
+    "firstName":"Наталья",
+    "middleName":"Анатольевна",
+    "login":"ПоляковаНА",
+    "email":"egdb48@yandex.ru",
+    "mobil": "9056879544",
+    "password": "GjkzrjdfYF#544"
+   }
+ ]
+}

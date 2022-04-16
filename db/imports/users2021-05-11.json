@@ -1,0 +1,24 @@
+{
+"users": [ 
+   { "org":"ГУЗ Хлевенская РБ",
+    "orgId":24,
+    "lastName":"Чурсина",
+    "firstName":"Тамара",
+    "middleName":"Владимировна",
+    "login":"ЧурсинаТВ",
+    "email":"chursina.t.v@hlevnoemed.ru",
+    "mobil": "4747721409",
+    "password": "XehcbyfND&409"
+   },
+   { "org":"ГУЗ Чаплыгинская РБ",
+    "orgId":39,
+    "lastName":"Викулина",
+    "firstName":"Валентина",
+    "middleName":"Михайловна",
+    "login":"ВикулинаВМ",
+    "email":"vikulina.valya2015@yandex.ru",
+    "mobil": "4747521253",
+    "password": "DbrekbyfDV)(253"
+   }
+ ]
+}

@@ -1,0 +1,24 @@
+{
+"users": [ 
+   { "org":"ГУЗ Лебедянская ЦРБ",
+    "orgId":9,
+    "lastName":"Сычкова",
+    "firstName":"Татьяна",
+    "middleName":"Александровна",
+    "login":"СычковаТА",
+    "email":"tanya_tolmacheva@inbox.ru",
+    "mobil": "9803557131",
+    "password": "CsxrjdfNF$131"
+   },
+   { "org":"ГУЗ Измалковская РБ",
+    "orgId":20,
+    "lastName":"Агапова",
+    "firstName":"Елена",
+    "middleName":"Ивановна",
+    "login":"АгаповаЕИ",
+    "email":"crbizm@yandex.ru",
+    "mobil": "9525916176",
+    "password": "FufgjdfTB#176"
+   }
+ ]
+}

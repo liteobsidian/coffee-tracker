@@ -1,0 +1,2 @@
+\set path_federal_subject     'D:\\work\\stat-app\\db\\imports\\federal_subject.txt'
+\COPY federal_subject(id,name) FROM :'path_federal_subject' WITH (DELIMITER '|', FORMAT 'csv', HEADER, NULL 'NULL');

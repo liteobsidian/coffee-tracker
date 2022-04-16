@@ -1,0 +1,13 @@
+{
+  "env": {
+    "node": true
+  },
+  "extends": ["standard"],
+  "parser": "babel-eslint",
+  "plugins": ["babel"],
+  "rules": {
+    "indent": ["error", 2],
+    "camelcase": "off",
+    "no-console": 0
+  }
+}

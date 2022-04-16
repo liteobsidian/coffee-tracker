@@ -1,0 +1,9 @@
+back/node_modules/
+front/node_modules/
+db/imports/node_modules/
+db/imports/res_from_svod_xlsx/
+db/imports/svod_xlsx_whith_error/
+DUMP
+# Editor directories and files
+.idea
+.vscode

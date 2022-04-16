@@ -1,0 +1,44 @@
+{
+"users": [ 
+  { "org":"ГУЗ Липецкий областной онкологический диспансер",
+    "orgId": 51,
+    "lastName":"Косых",
+    "firstName":"Наталия",
+    "middleName":"Анатольевна",
+    "login":"КосыхНА",
+    "email":"nataliacosih@yandex.ru",
+    "mobil": "9042891309",
+    "password": "Rjcs[YF#@309!"
+   },
+   { "org":"ГУЗ Липецкий областной онкологический диспансер",
+    "orgId":51,
+    "lastName":"Полукаров",
+    "firstName":"Илья",
+    "middleName":"Геннадиевич",
+    "login":"ПолукаровИГ",
+    "email":"polukarov-lood@yandex.ru",
+    "mobil": "9202425499",
+    "password": "GjkerfhjdBU)@498!"
+   },
+   { "org":"ГУЗ ЛОКИБ",
+    "orgId":43,
+    "lastName":"Панарина",
+    "firstName":"Светлана",
+    "middleName":"Евгеньевна",
+    "login":"ПанаринаСЕ",
+    "email":"darja-09@yandex.ru",
+    "mobil": "9046997526",
+    "password": "Gfyfhbyf@74!2"
+   },
+   { "org":"ГУЗ ЛОКИБ",
+    "orgId":43,
+    "lastName":"Коровина",
+    "firstName":"Юлия",
+    "middleName":"Васильевна",
+    "login":"КоровинаЮВ",
+    "email":"julia80lip@mail.ru",
+    "mobil": "9042989708",
+    "password": "Rjhjdbyf>D%*708"
+   }      
+ ]
+}
