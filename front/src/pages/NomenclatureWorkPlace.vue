@@ -53,9 +53,9 @@
             .col-4
               q-input.q-mb-lg(flat dense label='Сумма закупки' mask='#.##' fill-mask='0'  reverse-fill-mask v-model='item.lot_value')
             .col-4
-              q-input.q-mb-lg(flat dense label='Минимальное количество' mask='######' fill-mask='0'  reverse-fill-mask v-model='item.min_count')
+              q-input.q-mb-lg(flat dense label='Минимальное количество' mask='#' fill-mask='0'  reverse-fill-mask v-model='item.min_count')
             .col-4
-              q-input.q-mb-lg(flat dense label='Максимальное количество' mask='######' fill-mask='0'  reverse-fill-mask v-model='item.max_count')
+              q-input.q-mb-lg(flat dense label='Максимальное количество' mask='#' fill-mask='0'  reverse-fill-mask v-model='item.max_count')
           .float-right.q-mb-md
             q-btn.q-mr-md(outline color='primary' label='Сохранить' @click='addNomenclature')
             q-btn(outline color='primary' label='Отмена' @click='closeForm')

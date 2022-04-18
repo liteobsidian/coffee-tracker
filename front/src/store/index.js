@@ -5,11 +5,9 @@ import Vuex from 'vuex'
 import auth from './auth'
 import division from './division'
 import nomenclature from './nomenclature'
-import organization from './organization'
-import reports from './reports'
 import period from './period'
 import loading from './loading'
-import dict from './dict'
+import workday from './workday'
 
 // import router from 'router'
 
@@ -28,13 +26,11 @@ export default function (/* { ssrContext } */) {
   const Store = new Vuex.Store({
     modules: {
       auth,
-      organization,
-      reports,
       period,
       loading,
-      dict,
       division,
-      nomenclature
+      nomenclature,
+      workday
     },
     plugins: [],
     strict: process.env.DEV

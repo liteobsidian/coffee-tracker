@@ -13,7 +13,7 @@
           .col-12
             q-item-section(avatar)
               q-avatar(color='white' style='height: 60px; width: 60px;')
-                span.text-primary {{ profile.name[0] }}
+                span.text-primary {{ profile.name ? profile.name.split(' ').map(el => el[0]).join('') : '' }}
             h6.q-mb-none.q-mt-xs.text-white {{ profile.name }}
     q-list(padding).text-teal-10
       q-item(

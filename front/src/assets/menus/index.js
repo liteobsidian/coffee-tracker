@@ -19,6 +19,13 @@ export const MAIN_MENU = [
     path: 'nomenclature',
     icon: 'category',
     page: 'NomenclatureWorkPlace'
+  },
+  {
+    title: 'График',
+    label: 'Назначение смен сотрудникам',
+    path: 'workdays',
+    icon: 'edit_calendar',
+    page: 'WorkdaysWorkPlace'
   }
   // ,
   // {
