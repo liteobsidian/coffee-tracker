@@ -7,7 +7,7 @@
             .text-h5.text-teal.q-my-sm {{$route.name}}
           .col-12.scroll(style='height: 80vh')
             q-list(bordered)
-              q-item(clickable outline v-for='user in users' @click='openEditUser(user)')
+              q-item(clickable outline v-for='(user, idx) in users' :key='idx' @click='openEditUser(user)')
                 q-item-section( avatar )
                   q-icon(color='primary' :name='user.is_admin ? "manage_accounts" : "account_circle"')
                 q-item-section {{user.name}}

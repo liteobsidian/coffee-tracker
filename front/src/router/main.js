@@ -6,9 +6,10 @@ const children = MAIN_MENU.map(el => {
   console.log(el.page)
   return {
     name: el.title,
+    label: el.label,
     path: el.path,
     component: () => {
-      if (el.page === 'MainWorkPlace') return import('@pages/MainWorkPlace')
+      if (el.page === 'NomenclatureWorkPlace') return import('@pages/NomenclatureWorkPlace')
       if (el.page === 'UsersWorkPlace') return import('@pages/UsersWorkPlace')
       if (el.page === 'DivisionsWorkPlace') return import('@pages/DivisionsWorkPlace')
     },
@@ -17,12 +18,12 @@ const children = MAIN_MENU.map(el => {
 })
 
 const routes = [
-  {
-    path: '/',
-    name: 'Index',
-    meta: { requiresAuth: true },
-    redirect: '/users'
-  },
+  // {
+  //   path: '/',
+  //   name: 'Index',
+  //   meta: { requiresAuth: true },
+  //   redirect: '/users'
+  // },
   {
     path: '/',
     meta: { requiresAuth: true },

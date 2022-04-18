@@ -23,7 +23,7 @@ export default {
   title: description,
   methods: {
     goMain () {
-      if (this.$route.path !== '/salary_report') this.$router.replace('/salary_report')
+      if (this.$route.path !== '/users') this.$router.replace('/users')
     }
   },
   mixins: [systemLogout]

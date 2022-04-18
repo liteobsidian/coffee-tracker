@@ -1,15 +1,24 @@
 export const MAIN_MENU = [
   {
     title: 'Пользователи',
+    label: 'Внесение/изменение пользователей',
     path: 'users',
     icon: 'people',
     page: 'UsersWorkPlace'
   },
   {
     title: 'Кофейни',
+    label: 'Список торговых точек',
     path: 'divisions',
-    icon: 'map',
+    icon: 'other_houses',
     page: 'DivisionsWorkPlace'
+  },
+  {
+    title: 'Номенклатура',
+    label: 'Список номенклатуры',
+    path: 'nomenclature',
+    icon: 'category',
+    page: 'NomenclatureWorkPlace'
   }
   // ,
   // {

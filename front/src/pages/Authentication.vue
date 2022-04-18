@@ -68,7 +68,7 @@ export default {
         if (outcome) {
           try {
             await this.authLogin(this.user)
-            this.$router.push('/salary_report')
+            this.$router.push('/users')
           } catch (err) {
             this.$q.notify({
               message: err.response.data.message.includes('Ошибка БД') ? 'Ошибка БД. Попробуйте ещё раз позже' : 'Ошибка авторизации. Неверный логин или пароль',

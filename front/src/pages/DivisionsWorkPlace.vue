@@ -7,9 +7,9 @@
             .text-h5.text-teal.q-my-sm {{$route.name}}
           .col-12.scroll(style='height: 80vh')
             q-list(bordered)
-              q-item(clickable outline v-for='division in divisions' @click='openEditDivision(division)')
+              q-item(clickable outline v-for='(division, idx) in divisions' :key='idx' @click='openEditDivision(division)')
                 q-item-section( avatar )
-                  q-icon(color='primary' name='Other Houses')
+                  q-icon(color='primary' name='other_houses')
                 q-item-section {{division.name}}
                 q-item-section(side)
                   q-btn(color='primary' flat round icon ='more_vert' @click.stop)
@@ -40,14 +40,15 @@
           .row.justify-between
             .text-h6 {{formName}}
             q-btn(flat fab-mini color='grey' icon='close' @click='closeForm')
-        q-card-section.q-pt-none.q-gutter-y-sm
-          q-input(flat dense label='Название' v-model='item.name')
-          q-input(flat dense label='Город' v-model='item.city')
-          q-input.q-mb-lg(flat dense label='Адрес' v-model='item.address')
-          q-input.q-mb-lg(flat dense label='Коэффициент' v-model='item.factor')
-          .float-right.q-mb-md
-            q-btn.q-mr-md(outline color='primary' label='Сохранить' @click='addDivision')
-            q-btn(outline color='primary' label='Отмена' @click='closeForm')
+        q-card-section.q-pt-none
+          q-form.q-gutter-y-sm
+            q-input(flat dense label='Название' v-model='item.name')
+            q-input(flat dense label='Город' v-model='item.city')
+            q-input.q-mb-lg(flat dense label='Адрес' v-model='item.address')
+            q-input.q-mb-lg(flat dense label='Коэффициент' mask='#.###' fill-mask='0'  reverse-fill-mask :rules='[val => (0.4 <= +val && val <= 1.1) || "Значение не умещается в интервал"]' v-model='item.factor')
+            .float-right.q-mb-md
+              q-btn.q-mr-md(outline color='primary' label='Сохранить' @click='addDivision')
+              q-btn(outline color='primary' label='Отмена' @click='closeForm')
 </template>
 
 <script>
@@ -130,7 +131,7 @@ export default {
     }
   },
   created () {
-    this.listDivisions('')
+    this.listDivision('')
   }
 }
 </script>

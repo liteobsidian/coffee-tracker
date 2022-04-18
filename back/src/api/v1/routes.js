@@ -6,6 +6,7 @@ import fileRoutes from './file/routes'
 import userRoutes from './user/routes'
 import orgRoutes from './organization/routes'
 import divRoutes from './division/routes'
+import nomRoutes from './nomenclature/routes'
 import templateRoutes from './template/routes'
 import outputFileRoutes from './output_file/routes'
 
@@ -25,6 +26,7 @@ router.use('/type', typeRoutes)
 router.use('/file', fileRoutes)
 router.use('/organization', orgRoutes)
 router.use('/division', divRoutes)
+router.use('/nomenclature', nomRoutes)
 router.use('/template', templateRoutes)
 router.use('/output_file', outputFileRoutes)
 

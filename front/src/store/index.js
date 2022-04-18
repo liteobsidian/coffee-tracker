@@ -4,6 +4,7 @@ import Vuex from 'vuex'
 // загрузка справочников
 import auth from './auth'
 import division from './division'
+import nomenclature from './nomenclature'
 import organization from './organization'
 import reports from './reports'
 import period from './period'
@@ -32,7 +33,8 @@ export default function (/* { ssrContext } */) {
       period,
       loading,
       dict,
-      division
+      division,
+      nomenclature
     },
     plugins: [],
     strict: process.env.DEV
