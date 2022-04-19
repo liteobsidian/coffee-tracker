@@ -49,6 +49,14 @@
         q-card-section.q-pt-none
           .row.q-col-gutter-sm
             .col-12
+              select-date(
+                label='Дата *'
+                dense
+                v-model='normalizeWorkdayDate'
+                @clear='currentWorkday.date=""'
+                ref='field01'
+                :rules='[ value => !!value || "Нельзя назначить смену на пустую дату"]'
+              )
               q-input(flat dense label='Название' v-model='currentWorkday.name')
             .col-4
               q-input(flat dense label='Единица измерения' v-model='currentWorkday.unit')
@@ -70,6 +78,11 @@
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import { Notify } from 'quasar'
+import SelectDate from '@components/inputs/SelectDate'
+import { format } from 'date-fns'
+import Vue from 'vue'
+
+const normalizeDate = (value) => value ? value.split(' ')[0].split('-').reverse().join('.') : ''
 
 export default {
   name: 'WorkdaysWorkPlace',
@@ -84,7 +97,7 @@ export default {
       showDialog: false,
       currentWorkday: {
         id: '',
-        date: null,
+        date: '',
         user_name: '',
         division_name: '',
         user_id: '',
@@ -104,6 +117,35 @@ export default {
     }),
     formName () {
       return !this.currentWorkday.id ? 'Создание смены' : 'Изменение смены'
+    },
+    documentTime () {
+      // eslint-disable-next-line no-unused-vars
+      const [_, dt = '00:00:00'] = this.currentWorkday.date.split(' ')
+      return dt !== '00:00:00' ? dt : format(new Date(), 'HH:mm')
+    },
+    normalizeWorkdayDate: {
+      get: function () {
+        return normalizeDate(this.currentWorkday.date)
+      },
+      set: function (val) {
+        Vue.set(this.currentWorkday, 'date', val)
+      }
+    },
+    normalizeWorkdayStartDate: {
+      get: function () {
+        return normalizeDate(this.currentWorkday.date_open)
+      },
+      set: function (val) {
+        Vue.set(this.currentWorkday, 'date_open', val)
+      }
+    },
+    normalizeWorkdayEndDate: {
+      get: function () {
+        return normalizeDate(this.currentWorkday.date_close)
+      },
+      set: function (val) {
+        Vue.set(this.currentWorkday, 'date_close', val)
+      }
     }
   },
   methods: {
@@ -157,12 +199,13 @@ export default {
     },
     openEditWorkday (item) {
       if (!this.isAdmin) return
-      this.currentWorkday = item
+      this.currentWorkday = { ...item }
       this.showDialog = true
     }
   },
   created () {
     this.listWorkdays('')
-  }
+  },
+  components: { 'select-date': SelectDate }
 }
 </script>

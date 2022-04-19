@@ -127,7 +127,7 @@ export default {
     },
     openEditUser (user) {
       if (!this.isAdmin) return
-      this.item = user
+      this.item = { ...user }
       this.showDialog = true
     }
   },

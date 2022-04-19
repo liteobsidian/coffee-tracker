@@ -144,7 +144,7 @@ export default {
     },
     openEditNomenclature (nomenclature) {
       if (!this.isAdmin) return
-      this.item = nomenclature
+      this.item = { ...nomenclature }
       this.showDialog = true
     }
   },

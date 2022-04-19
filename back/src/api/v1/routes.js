@@ -1,14 +1,9 @@
 import { Router } from 'express'
 import { authUser } from '../../auth'
 import authRoutes from './auth/routes'
-import typeRoutes from './type/routes'
-import fileRoutes from './file/routes'
-import userRoutes from './user/routes'
-import orgRoutes from './organization/routes'
 import divRoutes from './division/routes'
 import nomRoutes from './nomenclature/routes'
-import templateRoutes from './template/routes'
-import outputFileRoutes from './output_file/routes'
+import workRoutes from './workday/routes'
 
 const router = Router()
 
@@ -21,13 +16,8 @@ router.get('/test', authUser, (req, res) => {
 })
 
 router.use('/auth', authRoutes)
-router.use('/user', userRoutes)
-router.use('/type', typeRoutes)
-router.use('/file', fileRoutes)
-router.use('/organization', orgRoutes)
 router.use('/division', divRoutes)
 router.use('/nomenclature', nomRoutes)
-router.use('/template', templateRoutes)
-router.use('/output_file', outputFileRoutes)
+router.use('/workday', workRoutes)
 
 export default router

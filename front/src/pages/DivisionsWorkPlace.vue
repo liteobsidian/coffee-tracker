@@ -126,7 +126,7 @@ export default {
     },
     openEditDivision (division) {
       if (!this.isAdmin) return
-      this.item = division
+      this.item = { ...division }
       this.showDialog = true
     }
   },
