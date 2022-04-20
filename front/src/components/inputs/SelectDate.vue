@@ -1,5 +1,5 @@
 <template lang='pug'>
-  q-input(
+  q-input.input_date(
     :disable='disable'
     :readonly='readonly'
     :dense='dense'
@@ -11,7 +11,8 @@
     hide-bottom-space
   )
     template(v-slot:before)
-      slot(name='before')
+      .q-pl-none
+        slot(name='before')
     template(v-slot:append)
       q-icon.cursor-pointer(v-if='!!value&&!disable&&!readonly' name='close' @click='$emit("clear")' size='20px')
       q-icon.cursor-pointer(size='20px' name='calendar_today' :disabled='disable || readonly')
@@ -88,5 +89,7 @@ export default {
 </script>
 
 <style>
-
+.input_date .q-field__before {
+  padding-right: 0 !important;
+}
 </style>

@@ -98,6 +98,10 @@ export const dateHelper = {
     },
     noFutureDate (date) {
       return new Date(date) <= new Date()
+    },
+    getCurrentDate () {
+      const timeStamp = Date.now()
+      return date.formatDate(timeStamp, 'YYYY-MM-DD HH:mm')
     }
   }
 }
