@@ -18,7 +18,7 @@ export const DELETE = `
 `
 
 export const LIST = `
-  select to_char(a.date, 'DD.MM.YYYY HH:mm') as date, a.auth_user_id as user_id,
+  select to_char(a.date, 'DD.MM.YYYY') as date, a.auth_user_id as user_id,
          b.name as user_name, c.name as division_name, a.division_id, a.uncash_sum,
          a.cash_sum, a.date_open, a.date_close
   from workday a

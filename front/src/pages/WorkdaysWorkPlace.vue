@@ -2,7 +2,7 @@
   div
     q-card.work-place.q-pt-none.q-px-md(flat)
       q-card-section
-        q-markup-table(flat)
+        q-markup-table.sticky_workdays_table(flat separator='horizontal')
           thead.bg-teal
             tr
               th(colspan='6')
@@ -20,7 +20,8 @@
               th.text-bold.text-white.text-right Открыта
               th.text-bold.text-white.text-right Закрыта
               th.text-bold.text-white.text-right Выручка
-            tr(v-for='(item, idx) in workdays' :key='idx' @click='openEditWorkday(item)')
+          tbody.scroll.bg-teal-1
+            tr.bg-teal-1(v-for='(item, idx) in workdays' :key='idx' @click='openEditWorkday(item)')
               td.text-left {{item.date}}
               td.text-right {{item.division_name}}
               td.text-right {{item.user_name}}
@@ -29,12 +30,11 @@
               td.text-right {{+item.uncash_sum + +item.cash_sum}}
         q-page-sticky(
           position='bottom-right'
-          :offset='[120, 16]'
+          :offset='[120, 50]'
         )
           q-btn(
             v-if='isAdmin'
             fab
-            outline
             icon='add'
             label='Назначить смену'
             color='teal-6'
@@ -96,7 +96,6 @@
 import { mapActions, mapGetters } from 'vuex'
 import { Notify } from 'quasar'
 import SelectDate from '@components/inputs/SelectDate'
-import { format } from 'date-fns'
 import Vue from 'vue'
 import { loadingStatus, dateHelper } from '@mixins'
 
@@ -138,11 +137,6 @@ export default {
     }),
     formName () {
       return !this.currentWorkday.id ? 'Создание смены' : 'Изменение смены'
-    },
-    documentTime () {
-      // eslint-disable-next-line no-unused-vars
-      const [_, dt = '00:00:00'] = this.currentWorkday.date.split(' ')
-      return dt !== '00:00:00' ? dt : format(new Date(), 'HH:mm')
     },
     normalizeWorkdayDate: {
       get: function () {
@@ -197,7 +191,7 @@ export default {
       // eslint-disable-next-line camelcase
       if (date && userId && divisionId) {
         try {
-          isAdd ? await this.pushNomenclatureInDB(this.item) : await this.editNomenclature(this.item)
+          isAdd ? await this.pushNomenclatureInDB(this.currentWorkday) : await this.editNomenclature(this.currentWorkday)
           this.clearForm()
           this.showDialog = false
           return
@@ -274,3 +268,31 @@ export default {
   mixins: [loadingStatus, dateHelper]
 }
 </script>
+
+<style lang="sass">
+.sticky_workdays_table
+  /* height or max-height is important */
+  height: calc(100vh - 120px)
+
+  .q-table__top,
+  .q-table__bottom,
+  thead tr:first-child th
+    /* bg color is important for th; just specify one */
+    background-color: teal
+  thead tr th
+    /* bg color is important for th; just specify one */
+    background-color: teal
+
+  thead tr th
+    position: sticky
+    z-index: 1
+  thead tr:first-child th
+    top: 0
+  thead tr th
+    top: 83px
+
+  /* this is when the loading indicator appears */
+  &.q-table--loading thead tr:last-child th
+    /* height of all previous header rows */
+    top: 48px
+</style>
