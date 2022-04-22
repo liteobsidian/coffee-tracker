@@ -290,9 +290,22 @@ export default {
     top: 0
   thead tr th
     top: 83px
+</style>
 
-  /* this is when the loading indicator appears */
-  &.q-table--loading thead tr:last-child th
-    /* height of all previous header rows */
-    top: 48px
+<style lang='scss'>
+.scroll {
+& ::-webkit-scrollbar {
+    width: 6px;
+    background-color: #F5F5F5;
+  }
+& ::-webkit-scrollbar-track {
+    border-radius: 5px;
+    background: #eee;
+    box-shadow: 0 0 1px 1px #bbb, inset 0 0 7px rgba(0,0,0,0.3)
+  }
+& ::-webkit-scrollbar-thumb {
+    border-radius: 5px;
+    background-color: #a0a0a0;
+  }
+}
 </style>
