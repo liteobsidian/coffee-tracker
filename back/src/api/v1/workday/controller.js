@@ -1,5 +1,13 @@
-import { addWorkdayDB, editWorkdayDB, deleteWorkdayDB, getWorkdaysDB } from './db'
+import { addWorkdayDB, editWorkdayDB, deleteWorkdayDB, getWorkdaysDB, getUserWorkdayDB } from './db'
 
+export const getUserWorkday = async (data) => {
+  try {
+    const item = await getUserWorkdayDB(data)
+    return item
+  } catch (error) {
+    return Promise.reject(error)
+  }
+}
 export const addWorkday = async ({ date, user_id, division_id, uncash_sum, cash_sum, date_open, date_close }) => {
   try {
     const workday = await addWorkdayDB({ date, user_id, division_id, uncash_sum, cash_sum, date_open, date_close })
@@ -35,3 +43,4 @@ export const getWorkdays = async (data) => {
     return Promise.reject(error)
   }
 }
+

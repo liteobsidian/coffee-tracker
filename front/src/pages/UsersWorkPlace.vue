@@ -5,35 +5,36 @@
         .row
           .col-12
             .text-h5.text-teal.q-my-sm {{$route.name}}
-          .col-12.scroll(style='height: 80vh')
-            q-list(bordered)
-              q-item(clickable outline v-for='(user, idx) in users' :key='idx' @click='openEditUser(user)')
-                q-item-section( avatar )
-                  q-icon(color='primary' :name='user.is_admin ? "manage_accounts" : "account_circle"')
-                q-item-section {{user.name}}
-                q-item-section(side)
-                  q-btn(color='primary' flat round icon ='more_vert' @click.stop)
-                    q-menu(
-                      transition-show='scale'
-                      transition-hide='scale'
-                      auto-close
-                    )
-                      q-list(dense style='min-width:100px')
-                        q-item(clickable v-close-popup @click='openEditUser(user)')
-                          q-item-section Открыть
-                        q-item(clickable v-close-popup @click='deleteUser(user.id)')
-                          q-item-section Удалить
-            q-page-sticky(
-              position='bottom-right'
-              :offset='[120, 16]'
-            )
-              q-btn(
-                v-if='isAdmin'
-                fab
-                icon='add'
-                color='teal-6'
-                @click='showDialog=true'
+          q-scroll-area.workplace_scroll
+            .col-12.scroll
+              q-list(bordered)
+                q-item(clickable outline v-for='(user, idx) in users' :key='idx' @click='openEditUser(user)')
+                  q-item-section( avatar )
+                    q-icon(color='primary' :name='user.is_admin ? "manage_accounts" : "account_circle"')
+                  q-item-section {{user.name}}
+                  q-item-section(side)
+                    q-btn(color='primary' flat round icon ='more_vert' @click.stop)
+                      q-menu(
+                        transition-show='scale'
+                        transition-hide='scale'
+                        auto-close
+                      )
+                        q-list(dense style='min-width:100px')
+                          q-item(clickable v-close-popup @click='openEditUser(user)')
+                            q-item-section Открыть
+                          q-item(clickable v-close-popup @click='deleteUser(user.id)')
+                            q-item-section Удалить
+              q-page-sticky(
+                position='bottom-right'
+                :offset='[120, 16]'
               )
+                q-btn(
+                  v-if='isAdmin'
+                  fab
+                  icon='add'
+                  color='teal-6'
+                  @click='showDialog=true'
+                )
     q-dialog(v-model='showDialog')
       q-card.q-px-sm(style='width: 600px')
         q-card-section.q-mb-sm
@@ -136,3 +137,10 @@ export default {
   }
 }
 </script>
+
+<style>
+.workplace_scroll {
+  height: calc(100vh - 150px);
+  width: 100%;
+}
+</style>

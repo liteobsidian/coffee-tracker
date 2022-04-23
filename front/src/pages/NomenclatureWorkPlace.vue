@@ -5,35 +5,36 @@
         .row
           .col-12
             .text-h5.text-teal.q-my-sm {{$route.name}}
-          .col-12.scroll(style='height: 80vh')
-            q-list(bordered)
-              q-item(clickable outline v-for='(nomenclature, idx) in nomenclatures' :key='idx' @click='openEditNomenclature(nomenclature)')
-                q-item-section( avatar )
-                  q-icon(color='primary' name='category')
-                q-item-section {{nomenclature.name}}
-                q-item-section(side)
-                  q-btn(color='primary' flat round icon ='more_vert' @click.stop)
-                    q-menu(
-                      transition-show='scale'
-                      transition-hide='scale'
-                      auto-close
-                    )
-                      q-list(dense style='min-width:100px')
-                        q-item(clickable v-close-popup @click='openEditNomenclature(nomenclature)')
-                          q-item-section Открыть
-                        q-item(clickable v-close-popup @click='deleteNomenclature(nomenclature.id)')
-                          q-item-section Удалить
-            q-page-sticky(
-              position='bottom-right'
-              :offset='[120, 16]'
-            )
-              q-btn(
-                v-if='isAdmin'
-                fab
-                icon='add'
-                color='teal-6'
-                @click='showDialog=true'
+          q-scroll-area.workplace_scroll
+            .col-12
+              q-list(bordered)
+                q-item(clickable outline v-for='(nomenclature, idx) in nomenclatures' :key='idx' @click='openEditNomenclature(nomenclature)')
+                  q-item-section( avatar )
+                    q-icon(color='primary' name='category')
+                  q-item-section {{nomenclature.name}}
+                  q-item-section(side)
+                    q-btn(color='primary' flat round icon ='more_vert' @click.stop)
+                      q-menu(
+                        transition-show='scale'
+                        transition-hide='scale'
+                        auto-close
+                      )
+                        q-list(dense style='min-width:100px')
+                          q-item(clickable v-close-popup @click='openEditNomenclature(nomenclature)')
+                            q-item-section Открыть
+                          q-item(clickable v-close-popup @click='deleteNomenclature(nomenclature.id)')
+                            q-item-section Удалить
+              q-page-sticky(
+                position='bottom-right'
+                :offset='[120, 16]'
               )
+                q-btn(
+                  v-if='isAdmin'
+                  fab
+                  icon='add'
+                  color='teal-6'
+                  @click='showDialog=true'
+                )
     q-dialog(v-model='showDialog')
       q-card.q-px-sm(style='width: 600px')
         q-card-section.q-mb-sm
@@ -153,3 +154,10 @@ export default {
   }
 }
 </script>
+
+<style>
+.workplace_scroll {
+  height: calc(100vh - 150px);
+  width: 100%;
+}
+</style>

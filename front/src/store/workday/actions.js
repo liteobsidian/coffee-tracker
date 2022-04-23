@@ -24,7 +24,7 @@ export async function editWorkday ({ dispatch, commit }, payload) {
       data: { ...payload }
     })
     dispatch('listWorkdays', '')
-    if (data) Notify.create({ message: `Смена ${payload.name} успешно изменена`, color: 'positive' })
+    if (data) Notify.create({ message: 'Смена успешно изменена', color: 'positive' })
   } catch (err) {
     console.error('Произошла ошибка при попытке изменить смену', err.message || err)
     return Promise.reject(err.response.data.message ? err : err.message)
@@ -57,6 +57,19 @@ export async function listWorkdays ({ dispatch, commit }, query) {
     commit('setWorkdaysList', data.list)
   } catch (err) {
     console.error('Произошла ошибка при попытке загрузить список смен', err.message || err)
+    return Promise.reject(err.response.data.message ? err : err.message)
+  }
+}
+
+export async function loadWorkdayByUser ({ commit }) {
+  try {
+    const { data } = await axios({
+      url: '/api/v1/workday/get-by-user',
+      method: 'get'
+    })
+    return data.list
+  } catch (err) {
+    console.error('Произошла ошибка при попытке загрузить смену', err.message || err)
     return Promise.reject(err.response.data.message ? err : err.message)
   }
 }

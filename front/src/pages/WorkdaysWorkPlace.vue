@@ -1,19 +1,13 @@
 <template lang='pug'>
   div
-    q-card.work-place.q-pt-none.q-px-md(flat)
-      q-card-section
-        q-markup-table.sticky_workdays_table(flat separator='horizontal')
-          thead.bg-teal
-            tr
-              th(colspan='6')
-                .row.no-wrap.items-center
-                  q-img.rounded-borders(
-                    style='width: 70px'
-                    :ratio='1'
-                    src='https://media.istockphoto.com/photos/male-barista-making-cappuccino-picture-id842948570?k=20&m=842948570&s=612x612&w=0&h=BRaz9dIccxudXFSqixgv-k-fwJRwoNnwkzT2xrHyGWI='
-                  )
-                  .text-h4.q-ml-md.text-white Установка смен сотрудникам
-            tr
+    q-card.q-pt-none.work-place.q-px-md(flat)
+      q-card-section.q-pt-xs
+        .row
+          .col-12
+            .text-h5.text-teal.q-my-sm {{$route.name}}
+        q-markup-table.sticky_workdays_table.scroll(flat bordered separator='horizontal')
+          thead
+            tr.bg-teal
               th.text-bold.text-white.text-left Дата
               th.text-bold.text-white.text-right Точка
               th.text-bold.text-white.text-right Сотрудник
@@ -21,7 +15,7 @@
               th.text-bold.text-white.text-right Закрыта
               th.text-bold.text-white.text-right Выручка
           tbody.scroll.bg-teal-1
-            tr.bg-teal-1(v-for='(item, idx) in workdays' :key='idx' @click='openEditWorkday(item)')
+            tr.bg-teal-1.cursor-pointer(v-for='(item, idx) in workdays' :key='idx' @click='openEditWorkday(item)')
               td.text-left {{item.date}}
               td.text-right {{item.division_name}}
               td.text-right {{item.user_name}}
@@ -32,8 +26,9 @@
           position='bottom-right'
           :offset='[120, 50]'
         )
-          q-btn(
+          q-btn.bg-white(
             v-if='isAdmin'
+            outline
             fab
             icon='add'
             label='Назначить смену'
@@ -70,23 +65,23 @@
                     q-item-section
                       span {{scope.opt.name}}
             .col-6
-              q-input.q-mb-lg(flat dense label='Выручка б/н' mask='#.##' fill-mask='0' reverse-fill-mask v-model='currentWorkday.uncash_sum')
+              q-input.q-mb-lg(input-class='text-right' :disable='!currentWorkday.id' flat dense label='Выручка б/н' mask='#.##' fill-mask='0' reverse-fill-mask v-model='currentWorkday.uncash_sum')
             .col-6
-              q-input.q-mb-lg(flat dense label='Касса' mask='#.##' fill-mask='0' reverse-fill-mask v-model='currentWorkday.total')
-            .col-6
+              q-input.q-mb-lg(input-class='text-right' :disable='!currentWorkday.id' flat dense label='Касса' mask='#.##' fill-mask='0' reverse-fill-mask v-model='currentWorkday.total')
+            .col-6.q-pt-none
               .col-12.q-my-none.q-py-none
                 span.text-caption Выручка наличными:
                 span.text-caption.text-teal.q-ml-sm {{cashSum}} руб.
               .col-12.q-my-none.q-py-none
                 span.text-caption Суммарная выручка:
                 span.text-caption.text-teal.q-ml-sm {{profit}} руб.
-            .col-6
+            .col-6.q-pt-none
               .col-12(v-if='currentWorkday.date_open')
-                span.text-caption Открытие смены:
-                span.text-caption.text-teal.q-ml-sm {{currentWorkday.date_open}}
+                span Открытие смены:
+                span.text-teal.q-ml-sm {{currentWorkday.date_open}}
               .col-12(v-if='currentWorkday.date_open')
-                span.text-caption Закрытие смены:
-                span.text-caption.text-teal.q-ml-sm {{currentWorkday.date_close}}
+                span Закрытие смены:
+                span.text-teal.q-ml-sm {{currentWorkday.date_close}}
           .float-right.q-mb-md
             q-btn.q-mr-md(outline color='primary' label='Сохранить' @click='addWorkday(currentWorkday)')
             q-btn(outline color='primary' label='Отмена' @click='closeForm')
@@ -188,10 +183,11 @@ export default {
       if (!date) this.$q.notify({ message: 'Укажите дату смены', type: 'info' })
       if (!userId) this.$q.notify({ message: 'Выберите сотрудника', type: 'info' })
       if (!divisionId) this.$q.notify({ message: 'Выберите точку', type: 'info' })
+      const payload = { ...this.currentWorkday, cash_sum: this.cashSum }
       // eslint-disable-next-line camelcase
       if (date && userId && divisionId) {
         try {
-          isAdd ? await this.pushNomenclatureInDB(this.currentWorkday) : await this.editNomenclature(this.currentWorkday)
+          isAdd ? await this.pushNomenclatureInDB(payload) : await this.editNomenclature(payload)
           this.clearForm()
           this.showDialog = false
           return
@@ -227,7 +223,7 @@ export default {
         this.isLoading = true
         if (!this.divisions && !this.divisions.length) await this.updateDivisionsList('')
         if (!this.users && !this.users.length) await this.updateUsersList('')
-        this.currentWorkday = { ...item }
+        this.currentWorkday = { ...item, total: (+this.fixIncass + +item.cash_sum).toFixed(2) }
         this.showDialog = true
       } catch (err) {
         console.error(err)
@@ -272,16 +268,16 @@ export default {
 <style lang="sass">
 .sticky_workdays_table
   /* height or max-height is important */
-  height: calc(100vh - 120px)
+  height: calc(100vh - 133px)
 
   .q-table__top,
   .q-table__bottom,
   thead tr:first-child th
     /* bg color is important for th; just specify one */
-    background-color: teal
+    //background-color: teal
   thead tr th
     /* bg color is important for th; just specify one */
-    background-color: teal
+    //background-color: teal
 
   thead tr th
     position: sticky
@@ -290,22 +286,4 @@ export default {
     top: 0
   thead tr th
     top: 83px
-</style>
-
-<style lang='scss'>
-.scroll {
-& ::-webkit-scrollbar {
-    width: 6px;
-    background-color: #F5F5F5;
-  }
-& ::-webkit-scrollbar-track {
-    border-radius: 5px;
-    background: #eee;
-    box-shadow: 0 0 1px 1px #bbb, inset 0 0 7px rgba(0,0,0,0.3)
-  }
-& ::-webkit-scrollbar-thumb {
-    border-radius: 5px;
-    background-color: #a0a0a0;
-  }
-}
 </style>

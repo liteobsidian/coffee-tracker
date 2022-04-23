@@ -39,10 +39,9 @@ export const deleteNomenclatureDB = async (id) => {
 }
 export const getNomenclatureDB = async ({ query = '' }) => {
   try {
-    const { rowCount, rows } = await db.query(LIST,
+    const { rows } = await db.query(LIST,
       [query]
     )
-    if (!rowCount) throw new Error('Ошибка загрузки списка номенклатур')
     return rows
   } catch (error) {
     return Promise.reject(error)

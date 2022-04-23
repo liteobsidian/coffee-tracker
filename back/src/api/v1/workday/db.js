@@ -1,6 +1,17 @@
 import db from '@db'
-import { ADD, DELETE, EDIT, LIST } from './sql'
+import { GET, ADD, DELETE, EDIT, LIST } from './sql'
 
+export const getUserWorkdayDB = async ({ id = '' }) => {
+  try {
+    if (!id) throw new Error('Пользователь не распознан')
+    const { rowCount, rows } = await db.query(GET,
+      [id]
+    )
+    return rowCount ? rows[0] : null
+  } catch (error) {
+    return Promise.reject(error)
+  }
+}
 export const addWorkdayDB = async ({ date, user_id, division_id, uncash_sum, cash_sum, date_open, date_close }) => {
   try {
     if (!date) throw new Error('Отсутствует дата смены')

@@ -9,6 +9,7 @@
         div.text-teal.text-caption ver {{ $options.version }}
       q-space(v-if='$q.screen.gt.xs')
       //profile-avatar.q-mr-sm
+      q-btn(flat round color='secondary' @click='$q.fullscreen.toggle()' :icon='$q.fullscreen.isActive ? \'fullscreen_exit\' : \'fullscreen\'')
       q-btn.q-mr-sm(flat round icon='logout' size='1.1rem' @click='logout')
         q-tooltip Выход из программы
 </template>

@@ -18,7 +18,7 @@ export const DELETE = `
 `
 
 export const LIST = `
-  select to_char(a.date, 'DD.MM.YYYY') as date, a.auth_user_id as user_id,
+  select a.id, to_char(a.date, 'DD.MM.YYYY') as date, a.auth_user_id as user_id,
          b.name as user_name, c.name as division_name, a.division_id, a.uncash_sum,
          a.cash_sum, a.date_open, a.date_close
   from workday a
@@ -26,4 +26,14 @@ export const LIST = `
   left join division c on a.division_id = c.id
   where $1 = '' or b.name~*$1 or c.name~*$1
   order by a.date desc
+`
+
+export const GET = `
+  select a.id, to_char(a.date, 'DD.MM.YYYY') as date, a.auth_user_id as user_id,
+         b.name as user_name, c.name as division_name, a.division_id, a.uncash_sum,
+         a.cash_sum, a.date_open, a.date_close
+  from workday a
+  left join auth_users b on a.auth_user_id = b.id
+  left join division c on a.division_id = c.id
+  where a.auth_user_id = $1 and a.date::date=current_date::date
 `

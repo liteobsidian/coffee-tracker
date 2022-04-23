@@ -13,6 +13,7 @@ const children = MAIN_MENU.map(el => {
       if (el.page === 'UsersWorkPlace') return import('@pages/UsersWorkPlace')
       if (el.page === 'DivisionsWorkPlace') return import('@pages/DivisionsWorkPlace')
       if (el.page === 'WorkdaysWorkPlace') return import('@pages/WorkdaysWorkPlace')
+      if (el.page === 'JobWorkPlace') return import('@pages/JobWorkPlace')
     },
     props
   }

@@ -26,6 +26,13 @@ export const MAIN_MENU = [
     path: 'workdays',
     icon: 'edit_calendar',
     page: 'WorkdaysWorkPlace'
+  },
+  {
+    title: 'Смена',
+    label: 'Открытие/закрытие смены',
+    path: 'job',
+    icon: 'badge',
+    page: 'JobWorkPlace'
   }
   // ,
   // {

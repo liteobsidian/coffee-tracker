@@ -2,10 +2,19 @@ import {
   addWorkday,
   deleteWorkday,
   editWorkday,
-  getWorkdays
+  getWorkdays,
+  getUserWorkday
 } from './controller'
 
 export default {
+  async get (req, res, next) {
+    try {
+      const list = await getUserWorkday(req.user)
+      res.json({ success: true, message: 'Смена успешно получена', list })
+    } catch (err) {
+      next(err)
+    }
+  },
   async add (req, res, next) {
     try {
       const workday = await addWorkday(req.body)
