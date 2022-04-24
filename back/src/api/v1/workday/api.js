@@ -3,7 +3,8 @@ import {
   deleteWorkday,
   editWorkday,
   getWorkdays,
-  getUserWorkday
+  getUserWorkday,
+  startDay
 } from './controller'
 
 export default {
@@ -43,6 +44,14 @@ export default {
     try {
       const list = await getWorkdays(req.body)
       res.json({ success: true, message: 'Список смен успешно получен', list })
+    } catch (err) {
+      next(err)
+    }
+  },
+  async start (req, res, next) {
+    try {
+      const id = await startDay(req.user)
+      res.json({ success: true, message: `Смена с id: ${id}` })
     } catch (err) {
       next(err)
     }

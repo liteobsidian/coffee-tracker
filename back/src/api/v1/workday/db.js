@@ -1,5 +1,5 @@
 import db from '@db'
-import { GET, ADD, DELETE, EDIT, LIST } from './sql'
+import { START, GET, ADD, DELETE, EDIT, LIST } from './sql'
 
 export const getUserWorkdayDB = async ({ id = '' }) => {
   try {
@@ -52,6 +52,16 @@ export const getWorkdaysDB = async ({ query = '' }) => {
   try {
     const { rows } = await db.query(LIST,
       [query]
+    )
+    return rows
+  } catch (error) {
+    return Promise.reject(error)
+  }
+}
+export const startDayDB = async ({ id }) => {
+  try {
+    const { rows } = await db.query(START,
+      [id]
     )
     return rows
   } catch (error) {

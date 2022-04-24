@@ -37,3 +37,8 @@ export const GET = `
   left join division c on a.division_id = c.id
   where a.auth_user_id = $1 and a.date::date=current_date::date
 `
+
+export const START = `
+  update workday set date_open = current_date
+    where date::date = current_date::date and auth_user_id = $1
+`

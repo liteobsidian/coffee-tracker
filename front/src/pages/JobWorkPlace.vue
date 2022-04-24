@@ -32,9 +32,23 @@
                     span Точка:
                     span.q-ml-sm.text-teal {{currentWorkday.division_name}}
                 .col-6
-                  q-input.q-mb-lg(input-class='text-right' flat dense label='Выручка б/н' mask='#.##' fill-mask='0' reverse-fill-mask v-model='currentWorkday.uncash_sum')
+                  q-input.q-mb-lg(
+                    input-class='text-right'
+                    :disable='currentWorkday.date_open'
+                    flat dense label='Выручка б/н'
+                    mask='#.##' fill-mask='0'
+                    reverse-fill-mask
+                    v-model='currentWorkday.uncash_sum'
+                  )
                 .col-6
-                  q-input.q-mb-lg(input-class='text-right' flat dense label='Касса' mask='#.##' fill-mask='0' reverse-fill-mask v-model='currentWorkday.total')
+                  q-input.q-mb-lg(
+                    input-class='text-right'
+                    flat dense label='Касса'
+                    mask='#.##' fill-mask='0'
+                    reverse-fill-mask
+                    v-model='currentWorkday.total'
+                    :disable='currentWorkday.date_close'
+                  )
                 .col-12
                   span.text-teal Инкассация:
                   span.text-primary.q-ml-sm {{fixIncass}} р.
@@ -191,7 +205,6 @@ export default {
       try {
         this.isLoading = true
         const workday = await this.getWorkdayByUser()
-        console.log('WORKDAY', workday)
         this.currentWorkday = { ...workday, total: this.fixIncass }
       } catch (err) {
         console.error(err)
