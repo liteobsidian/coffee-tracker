@@ -4,7 +4,16 @@
       q-card-section
         div &nbsp;
       q-card-section
-        q-card
+        q-card(v-if='!currentWorkday.id')
+          q-card-section.q-pb-none
+            .col-12.flex.justify-between.items-end
+              .text-h6.text-teal Смена
+              .text-primary {{currentTime}}
+          q-card-section.background_coffee_image.q-mt-md
+            .blur
+              .row.q-col-gutter-sm.text-center(style='z-index: 1; height: 30vh;')
+                .col-12.self-center.text-primary.text-h6 На сегодня смен не назначено!
+        q-card(v-else)
           q-card-section.q-pb-none
             .col-12.flex.justify-between.items-end
               .text-h6.text-teal Смена
@@ -18,7 +27,7 @@
               .text-primary(v-else) {{currentTime}}
           q-card-section.background_coffee_image.q-mt-md
             .blur
-              .row.q-col-gutter-sm(style='z-index: 1;')
+              form.row.q-col-gutter-sm(style='z-index: 1;')
                 .col-12.flex.justify-between
                   select-date(
                     label='Дата'
@@ -34,7 +43,8 @@
                 .col-6
                   q-input.q-mb-lg(
                     input-class='text-right'
-                    :disable='currentWorkday.date_open'
+                    :disable='!currentWorkday.date_open'
+                    :readonly='!!currentWorkday.date_close'
                     flat dense label='Выручка б/н'
                     mask='#.##' fill-mask='0'
                     reverse-fill-mask
@@ -47,7 +57,8 @@
                     mask='#.##' fill-mask='0'
                     reverse-fill-mask
                     v-model='currentWorkday.total'
-                    :disable='currentWorkday.date_close'
+                    :disable='!currentWorkday.date_open'
+                    :readonly='!!currentWorkday.date_close'
                   )
                 .col-12
                   span.text-teal Инкассация:
@@ -66,6 +77,26 @@
                   .col-12(v-if='currentWorkday.date_open')
                     span Закрытие смены:
                     span.text-teal.q-ml-sm {{currentWorkday.date_close}}
+                .col-12
+                  .row
+                    .col-6
+                      span.text-teal Cледующая смена:
+                      span.text-primary.q-ml-sm {{this.nextDate}}
+                      span.text-teal.q-ml-sm на точке:
+                      span.text-primary.q-ml-sm {{this.nextDivision}}
+                    .col-6
+                      q-btn.float-right(
+                        v-if='!currentWorkday.date_close'
+                        outline
+                        :disable='!(+currentWorkday.uncash_sum + +cashSum)'
+                        label='Закрыть смену'
+                        color='teal-6'
+                        @click='closeWorkday'
+                      )
+                      q-tooltip(v-if='!(+currentWorkday.uncash_sum + +cashSum)') Заполните выручку
+                      div.float-right.flex(v-if='currentWorkday.date_close')
+                        .text-teal.rounded-borders Смена закрыта
+                        q-icon.q-ml-sm(color='teal' name='check' size='sm')
 </template>
 
 <script>
@@ -103,7 +134,9 @@ export default {
       },
       fixIncass: 3000,
       intervalId: null,
-      date: null
+      date: null,
+      nextDate: null,
+      nextDivision: ''
     }
   },
   computed: {
@@ -130,71 +163,33 @@ export default {
   },
   methods: {
     ...mapActions({
-      getWorkdayByUser: 'workday/loadWorkdayByUser'
+      getWorkdayByUser: 'workday/loadWorkdayByUser',
+      openCurrentWorkday: 'workday/openWorkday',
+      closeCurrentWorkday: 'workday/closeWorkday',
+      getNextWorkday: 'workday/nextWorkday'
     }),
     showNotify (message) {
       Notify.create(message)
     },
-    async closeWorkday () {
-      // eslint-disable-next-line camelcase
-      const { id, date, user_id: userId, division_id: divisionId } = this.currentWorkday
-      const isAdd = !id
-      if (!date) this.$q.notify({ message: 'Укажите дату смены', type: 'info' })
-      if (!userId) this.$q.notify({ message: 'Выберите сотрудника', type: 'info' })
-      if (!divisionId) this.$q.notify({ message: 'Выберите точку', type: 'info' })
-      const payload = { ...this.currentWorkday, cash_sum: this.cashSum }
-      // eslint-disable-next-line camelcase
-      if (date && userId && divisionId) {
-        try {
-          isAdd ? await this.pushNomenclatureInDB(payload) : await this.editNomenclature(payload)
-          this.clearForm()
-          this.showDialog = false
-          return
-        } catch (err) {
-          this.$q.notify(err && err.response && err.response.data ? err.response.data.message : 'Ошибка')
-        }
-      }
-      console.error(`Не получилось ${isAdd ? 'добавить' : 'изменить'} смену`)
-      this.$q.notify({ message: `Не получилось ${isAdd ? 'добавить' : 'изменить'} смену`, color: 'primary' })
-    },
-    clearForm () {
-      this.currentWorkday = {
-        id: '',
-        date: null,
-        user_name: '',
-        division_name: '',
-        user_id: '',
-        division_id: '',
-        uncash_sum: '0.00',
-        cash_sum: '0.00',
-        date_open: null,
-        date_close: null,
-        total: '0.00'
-      }
-    },
-    async openEditWorkday (item) {
-      if (!this.isAdmin) return
+    async openWorkday () {
       try {
         this.isLoading = true
-        if (!this.divisions && !this.divisions.length) await this.updateDivisionsList('')
-        if (!this.users && !this.users.length) await this.updateUsersList('')
-        this.currentWorkday = { ...item, total: (+this.fixIncass + +item.cash_sum).toFixed(2) }
-        this.showDialog = true
+        await this.openCurrentWorkday()
+        await this.updateWorkday()
       } catch (err) {
         console.error(err)
       } finally {
         this.isLoading = false
       }
     },
-    async openWorkdayForm () {
-      if (!this.isAdmin) return
+    async closeWorkday () {
       try {
-        this.clearForm()
         this.isLoading = true
-        if (!this.divisions || !this.divisions.length) await this.updateDivisionsList('')
-        if (!this.users || !this.users.length) await this.updateUsersList('')
-        this.currentWorkday.total = this.fixIncass.toFixed(2)
-        this.showDialog = true
+        await this.closeCurrentWorkday({
+          cash_sum: this.cashSum,
+          uncash_sum: this.currentWorkday.uncash_sum
+        })
+        await this.updateWorkday()
       } catch (err) {
         console.error(err)
       } finally {
@@ -205,7 +200,10 @@ export default {
       try {
         this.isLoading = true
         const workday = await this.getWorkdayByUser()
-        this.currentWorkday = { ...workday, total: this.fixIncass }
+        const { item } = await this.getNextWorkday()
+        this.nextDate = item.date
+        this.nextDivision = item.name
+        this.currentWorkday = { ...workday, total: (+workday.cash_sum + +this.fixIncass).toFixed(2) }
       } catch (err) {
         console.error(err)
       } finally {

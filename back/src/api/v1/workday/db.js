@@ -1,5 +1,5 @@
 import db from '@db'
-import { START, GET, ADD, DELETE, EDIT, LIST } from './sql'
+import { START, GET, ADD, DELETE, EDIT, LIST, END, NEXT } from './sql'
 
 export const getUserWorkdayDB = async ({ id = '' }) => {
   try {
@@ -64,6 +64,29 @@ export const startDayDB = async ({ id }) => {
       [id]
     )
     return rows
+  } catch (error) {
+    return Promise.reject(error)
+  }
+}
+export const endDayDB = async ({ userId, uncash_sum, cash_sum }) => {
+  try {
+    if (!uncash_sum && !cash_sum) throw new Error('В запросе отсутствует выручка')
+    if (!userId) throw new Error('В запросе отсутствует информация о пользователе')
+    const { rows } = await db.query(END,
+      [userId, uncash_sum, cash_sum]
+    )
+    return rows
+  } catch (error) {
+    return Promise.reject(error)
+  }
+}
+
+export const nextDayDB = async ({ id }) => {
+  try {
+    const { rows } = await db.query(NEXT,
+      [id]
+    )
+    return rows.length ? rows[0] : null
   } catch (error) {
     return Promise.reject(error)
   }

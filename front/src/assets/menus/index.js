@@ -33,6 +33,13 @@ export const MAIN_MENU = [
     path: 'job',
     icon: 'badge',
     page: 'JobWorkPlace'
+  },
+  {
+    title: 'Учет',
+    label: 'Ведение складского учёта',
+    path: 'storage',
+    icon: 'storefront',
+    page: 'StorageWorkPlace'
   }
   // ,
   // {

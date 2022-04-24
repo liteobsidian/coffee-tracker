@@ -61,7 +61,7 @@ export async function listWorkdays ({ dispatch, commit }, query) {
   }
 }
 
-export async function loadWorkdayByUser ({ commit }) {
+export async function loadWorkdayByUser () {
   try {
     const { data } = await axios({
       url: '/api/v1/workday/get-by-user',
@@ -70,6 +70,47 @@ export async function loadWorkdayByUser ({ commit }) {
     return data.list
   } catch (err) {
     console.error('Произошла ошибка при попытке загрузить смену', err.message || err)
+    return Promise.reject(err.response.data.message ? err : err.message)
+  }
+}
+
+export async function openWorkday () {
+  try {
+    const { data } = await axios({
+      url: '/api/v1/workday/start-job',
+      method: 'get'
+    })
+    return data
+  } catch (err) {
+    console.error('Ошибка при попытке открыть смену', err.message || err)
+    return Promise.reject(err.response.data.message ? err : err.message)
+  }
+}
+
+// eslint-disable-next-line no-empty-pattern
+export async function closeWorkday ({}, payload) {
+  try {
+    const { data } = await axios({
+      url: '/api/v1/workday/end-job',
+      method: 'post',
+      data: payload
+    })
+    return data
+  } catch (err) {
+    console.error('Ошибка при попытке закрыть смену', err.message || err)
+    return Promise.reject(err.response.data.message ? err : err.message)
+  }
+}
+
+export async function nextWorkday () {
+  try {
+    const { data } = await axios({
+      url: '/api/v1/workday/next',
+      method: 'get'
+    })
+    return data
+  } catch (err) {
+    console.error('Загружена следующая смена', err.message || err)
     return Promise.reject(err.response.data.message ? err : err.message)
   }
 }

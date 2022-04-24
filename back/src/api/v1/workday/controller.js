@@ -1,4 +1,8 @@
-import { addWorkdayDB, editWorkdayDB, deleteWorkdayDB, getWorkdaysDB, getUserWorkdayDB, startDayDB } from './db'
+import {
+  addWorkdayDB, editWorkdayDB, deleteWorkdayDB,
+  getWorkdaysDB, getUserWorkdayDB, startDayDB,
+  endDayDB, nextDayDB
+} from './db'
 
 export const getUserWorkday = async (data) => {
   try {
@@ -47,6 +51,22 @@ export const startDay = async (data) => {
   try {
     const id = await startDayDB(data)
     return id
+  } catch (error) {
+    return Promise.reject(error)
+  }
+}
+export const endDay = async (data) => {
+  try {
+    const id = await endDayDB(data)
+    return id
+  } catch (error) {
+    return Promise.reject(error)
+  }
+}
+export const nextDay = async (data) => {
+  try {
+    const next = await nextDayDB(data)
+    return next
   } catch (error) {
     return Promise.reject(error)
   }

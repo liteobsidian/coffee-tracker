@@ -9,6 +9,8 @@ router.post('/add', authUser, api.add)
 router.post('/list', authUser, api.workdays)
 router.put('/edit', authUser, api.edit)
 router.delete('/', authUser, api.delete)
-router.post('/start-job', authUser, api.start)
+router.get('/start-job', authUser, api.start)
+router.post('/end-job', authUser, api.end)
+router.get('/next', authUser, api.next)
 
 export default router

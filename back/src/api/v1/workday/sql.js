@@ -31,7 +31,8 @@ export const LIST = `
 export const GET = `
   select a.id, to_char(a.date, 'DD.MM.YYYY') as date, a.auth_user_id as user_id,
          b.name as user_name, c.name as division_name, a.division_id, a.uncash_sum,
-         a.cash_sum, a.date_open, a.date_close
+         a.cash_sum, to_char(a.date_open, 'DD.MM.YYYY HH:mm') as date_open,
+         to_char(a.date_close, 'DD.MM.YYYY HH:mm') as date_close
   from workday a
   left join auth_users b on a.auth_user_id = b.id
   left join division c on a.division_id = c.id
@@ -39,6 +40,21 @@ export const GET = `
 `
 
 export const START = `
-  update workday set date_open = current_date
+  update workday set date_open = current_timestamp
     where date::date = current_date::date and auth_user_id = $1
+    returning id
+`
+
+export const END = `
+  update workday set date_close = current_timestamp, uncash_sum = $2, cash_sum = $3
+    where date::date = current_date::date and auth_user_id = $1
+    returning id
+`
+
+export const NEXT = `
+  select b.name, to_char(a.date, 'DD.MM.YYYY') as date
+  from workday a
+    left join division b on a.division_id = b.id
+    where a.auth_user_id = $1 and a.date::date > current_date
+    order by a.date limit 1
 `

@@ -267,18 +267,7 @@ export default {
 
 <style lang="sass">
 .sticky_workdays_table
-  /* height or max-height is important */
   height: calc(100vh - 133px)
-
-  .q-table__top,
-  .q-table__bottom,
-  thead tr:first-child th
-    /* bg color is important for th; just specify one */
-    //background-color: teal
-  thead tr th
-    /* bg color is important for th; just specify one */
-    //background-color: teal
-
   thead tr th
     position: sticky
     z-index: 1
