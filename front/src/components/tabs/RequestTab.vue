@@ -1,40 +1,23 @@
 <template lang='pug'>
   div
-    q-card.work-place.q-pt-none.q-px-md(flat)
-      q-card-section
-        .row
-          .col-12
-            .text-h5.text-teal.q-my-sm {{$route.name}}
-          q-scroll-area.workplace_scroll
-            .col-12
-              q-list(bordered)
-                q-item(clickable outline v-for='(nomenclature, idx) in nomenclatures' :key='idx' @click='openEditNomenclature(nomenclature)')
-                  q-item-section( avatar )
-                    q-icon(color='primary' name='category')
-                  q-item-section {{nomenclature.name}}
-                  q-item-section(side)
-                    q-btn(color='primary' flat round icon ='more_vert' @click.stop)
-                      q-menu(
-                        transition-show='scale'
-                        transition-hide='scale'
-                        auto-close
-                      )
-                        q-list(dense style='min-width:100px')
-                          q-item(clickable v-close-popup @click='openEditNomenclature(nomenclature)')
-                            q-item-section Открыть
-                          q-item(clickable v-close-popup @click='deleteNomenclature(nomenclature.id)')
-                            q-item-section Удалить
-              q-page-sticky(
-                position='bottom-right'
-                :offset='[120, 16]'
-              )
-                q-btn(
-                  v-if='isAdmin'
-                  fab
-                  icon='add'
-                  color='teal-6'
-                  @click='showDialog=true'
-                )
+    .text-h4.q-mb-md Склад
+    q-list(bordered)
+      q-item(clickable outline v-for='(nomenclature, idx) in nomenclatures' :key='idx' @click='openEditNomenclature(nomenclature)')
+        q-item-section( avatar )
+          q-icon(color='primary' name='category')
+        q-item-section {{nomenclature.name}}
+        q-item-section(side)
+          q-btn(color='primary' flat round icon ='more_vert' @click.stop)
+            q-menu(
+              transition-show='scale'
+              transition-hide='scale'
+              auto-close
+            )
+              q-list(dense style='min-width:100px')
+                q-item(clickable v-close-popup @click='openEditNomenclature(nomenclature)')
+                  q-item-section Открыть
+                q-item(clickable v-close-popup @click='deleteNomenclature(nomenclature.id)')
+                  q-item-section Удалить
     q-dialog(v-model='showDialog')
       q-card.q-px-sm(style='width: 600px')
         q-card-section.q-mb-sm
@@ -48,15 +31,15 @@
             .col-4
               q-input(flat dense label='Единица измерения' v-model='item.unit')
             .col-4
-              q-input.q-mb-lg(input-class='text-right' flat dense label='Цена' mask='#.##' fill-mask='0'  reverse-fill-mask v-model='item.cost')
+              q-input.q-mb-lg(flat dense label='Цена' mask='#.##' fill-mask='0'  reverse-fill-mask v-model='item.cost')
             .col-4.self-center
               q-checkbox.text-teal.text-caption.q-mb-lg(flat dense v-model='item.is_perishable') Скоропортящийся продукт
             .col-4
-              q-input.q-mb-lg(input-class='text-right' flat dense label='Количество в закупке' mask='#' fill-mask='0'  reverse-fill-mask v-model='item.lot_value')
+              q-input.q-mb-lg(flat dense label='Сумма закупки' mask='#.##' fill-mask='0'  reverse-fill-mask v-model='item.lot_value')
             .col-4
-              q-input.q-mb-lg(input-class='text-right' flat dense label='Минимальное количество' mask='#' fill-mask='0'  reverse-fill-mask v-model='item.min_count')
+              q-input.q-mb-lg(flat dense label='Минимальное количество' mask='#' fill-mask='0'  reverse-fill-mask v-model='item.min_count')
             .col-4
-              q-input.q-mb-lg(input-class='text-right' flat dense label='Максимальное количество' mask='#' fill-mask='0'  reverse-fill-mask v-model='item.max_count')
+              q-input.q-mb-lg(flat dense label='Максимальное количество' mask='#' fill-mask='0'  reverse-fill-mask v-model='item.max_count')
           .float-right.q-mb-md
             q-btn.q-mr-md(outline color='primary' label='Сохранить' @click='addNomenclature')
             q-btn(outline color='primary' label='Отмена' @click='closeForm')
@@ -67,15 +50,10 @@ import { mapActions, mapGetters } from 'vuex'
 import { Notify } from 'quasar'
 
 export default {
-  name: 'NomenclatureWorkPlace',
-  props: {
-    listType: {
-      type: String,
-      default: 'nomenclatures'
-    }
-  },
+  name: 'RequestTab',
   data () {
     return {
+      tab: 'storage',
       showDialog: false,
       item: {
         id: '',

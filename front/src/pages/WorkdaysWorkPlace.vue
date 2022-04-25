@@ -1,7 +1,7 @@
 <template lang='pug'>
   div
     q-card.q-pt-none.work-place.q-px-md(flat)
-      q-card-section.q-pt-xs
+      q-card-section
         .row
           .col-12
             .text-h5.text-teal.q-my-sm {{$route.name}}
@@ -267,7 +267,7 @@ export default {
 
 <style lang="sass">
 .sticky_workdays_table
-  height: calc(100vh - 133px)
+  height: calc(100vh - 150px)
   thead tr th
     position: sticky
     z-index: 1
