@@ -9,6 +9,7 @@ import period from './period'
 import loading from './loading'
 import workday from './workday'
 import storage from './storage'
+import inventory from './inventory'
 
 // import router from 'router'
 
@@ -32,7 +33,8 @@ export default function (/* { ssrContext } */) {
       division,
       nomenclature,
       workday,
-      storage
+      storage,
+      inventory
     },
     plugins: [],
     strict: process.env.DEV

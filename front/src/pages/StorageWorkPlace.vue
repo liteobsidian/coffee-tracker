@@ -18,13 +18,13 @@
               q-tab-panel(name='request')
                 request-tab
               q-tab-panel(name='invent')
-                invent-tab
+                inventory-tab
 </template>
 
 <script>
 import StorageTab from '@components/tabs/StorageTab'
 import RequestTab from '@components/tabs/RequestTab'
-import InventTab from '@components/tabs/InventTab'
+import InventoryTab from '@components/tabs/InventoryTab'
 
 export default {
   name: 'StorageWorkPlace',
@@ -40,7 +40,7 @@ export default {
       splitterModel: 15
     }
   },
-  components: { StorageTab, RequestTab, InventTab }
+  components: { StorageTab, RequestTab, InventoryTab }
 }
 </script>
 

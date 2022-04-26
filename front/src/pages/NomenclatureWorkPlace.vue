@@ -52,7 +52,7 @@
             .col-4.self-center
               q-checkbox.text-teal.text-caption.q-mb-lg(flat dense v-model='item.is_perishable') Скоропортящийся продукт
             .col-4
-              q-input.q-mb-lg(input-class='text-right' flat dense label='Количество в закупке' mask='#' fill-mask='0'  reverse-fill-mask v-model='item.lot_value')
+              q-input.q-mb-lg(input-class='text-right' flat dense label='Минимальный заказ' mask='#' fill-mask='0'  reverse-fill-mask v-model='item.lot_value')
             .col-4
               q-input.q-mb-lg(input-class='text-right' flat dense label='Минимальное количество' mask='#' fill-mask='0'  reverse-fill-mask v-model='item.min_count')
             .col-4
