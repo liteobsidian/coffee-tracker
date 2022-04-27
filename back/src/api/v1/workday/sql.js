@@ -1,9 +1,15 @@
+export const GET_STYLE = `
+SHOW datestyle
+`
+export const SET_STYLE = `
+SET datestyle = 'DMY'
+`
 export const ADD = `
   insert into workday(
-                       date, auth_user_id, division_id, uncash_sum, cash_sum,
-                       date_open, date_close
-                       )
-  values($1, $2, $3, $4, $5, $6, $7)
+    date, auth_user_id, division_id, uncash_sum, cash_sum,
+    date_open, date_close
+    )
+  values ($1::date, $2, $3, $4, $5, $6, $7)
   returning *
 `
 export const EDIT = `
