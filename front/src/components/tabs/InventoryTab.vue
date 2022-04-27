@@ -49,7 +49,7 @@
             .col-4
               q-input.q-mb-lg(flat dense label='Максимальное количество' mask='#' fill-mask='0'  reverse-fill-mask v-model='item.max_count')
           .float-right.q-mb-md
-            q-btn.q-mr-md(outline color='primary' label='Сохранить' @click='addNomenclature')
+            q-btn.q-mr-md(outline color='primary' label='Сохранить' @click='saveInventory')
             q-btn(outline color='primary' label='Отмена' @click='closeForm')
 </template>
 

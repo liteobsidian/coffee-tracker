@@ -9,7 +9,11 @@ const pool = new Pool({
   host: DB_HOST,
   port: DB_PORT,
   user: DB_USER,
-  password: DB_PASSWORD
+  password: DB_PASSWORD,
+  ssl: {
+    require: true,
+    rejectUnauthorized: false
+  }
 })
 
 pool.on('error', (err, client) => {
@@ -62,7 +66,11 @@ export default {
         host: DB_HOST,
         port: DB_PORT,
         user: DB_USER,
-        password: DB_PASSWORD
+        password: DB_PASSWORD,
+        ssl: {
+          require: true,
+          rejectUnauthorized: false
+        }
       })
       await client.connect()
       const result = await client.query(text, params)
