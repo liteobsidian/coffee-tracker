@@ -15,8 +15,8 @@ export const getUserWorkdayDB = async ({ id = '' }) => {
 export const addWorkdayDB = async ({ date, user_id, division_id, uncash_sum, cash_sum, date_open, date_close }) => {
   try {
     if (!date) throw new Error('Отсутствует дата смены')
-    const { rows: r } = await db.query(GET_STYLE)
-    if (r && r[0] && !!r[0].DateStyle && (r[0].DateStyle === 'ISO, MDY')) await db.query(SET_STYLE)
+    // const { rows: r } = await db.query(GET_STYLE)
+    // if (r && r[0] && !!r[0].DateStyle && (r[0].DateStyle === 'ISO, MDY')) await db.query(SET_STYLE)
     const { rowCount, rows } = await db.query(ADD,
       [date, user_id, division_id, uncash_sum, cash_sum, date_open, date_close]
     )

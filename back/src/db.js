@@ -16,6 +16,17 @@ const pool = new Pool({
   }
 })
 
+;(async () => {
+  await pool.query("SET DateStyle='DMY'")
+  await pool.query("SET timezone = 'utc-3'")
+  const { rows } = await pool.query('select now()::timestamp')
+  console.log(rows[0])
+})().catch(err =>
+  setImmediate(() => {
+    throw err
+  })
+)
+
 pool.on('error', (err, client) => {
   log.error('Ошибка клиента', { error: err, client: client })
   process.exit(-1)
