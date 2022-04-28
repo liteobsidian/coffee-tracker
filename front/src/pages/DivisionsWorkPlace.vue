@@ -42,19 +42,66 @@
             .text-h6 {{formName}}
             q-btn(flat fab-mini color='grey' icon='close' @click='closeForm')
         q-card-section.q-pt-none
-          q-form.q-gutter-y-sm
-            q-input(flat dense label='Название' v-model='item.name')
-            q-input(flat dense label='Город' v-model='item.city')
-            q-input.q-mb-lg(flat dense label='Адрес' v-model='item.address')
-            q-input.q-mb-lg(flat dense label='Коэффициент' mask='#.###' fill-mask='0'  reverse-fill-mask :rules='[val => (0.4 <= +val && val <= 1.1) || "Значение не умещается в интервал"]' v-model='item.factor')
-            .float-right.q-mb-md
-              q-btn.q-mr-md(outline color='primary' label='Сохранить' @click='addDivision')
-              q-btn(outline color='primary' label='Отмена' @click='closeForm')
+          q-form.row.q-col-gutter-sm
+            .col-8
+              q-input(flat dense label='Название' v-model='item.name')
+            .col-4
+              q-input(flat dense label='Город' v-model='item.city')
+            .col-8
+              q-input(flat dense label='Адрес' v-model='item.address')
+            .col-4
+              q-input(
+                input-class='text-right'
+                flat dense
+                label='Коэффициент'
+                mask='#.###' fill-mask='0'
+                reverse-fill-mask
+                :rules='[val => (0.4 <= +val && val <= 1.1) || "Значение не умещается в интервал"]'
+                v-model='item.factor'
+              )
+            .col-12
+              .text-teal Список номенклатуры точки
+              q-list.relative-position(:bordered='!!nomenclature.length' separator dense style='min-height: 100px;')
+                .flex.justify-center.content-center(v-if='!item.nomenclature || !item.nomenclature.length' style='height: 100px')
+                  .text-body2.text-primary Отсутствует, привязанная к точке номенклатура
+                q-item(v-ripple v-for='(item, idx) in item.nomenclature' :key='idx')
+                  q-item-section(side top)
+                    q-btn(icon='remove' fab-mini flat color='primary' @click='removeItem(idx)')
+                  q-item-section {{item && item.name ? item.name : ''}}
+                  q-separator
+              q-btn.float-right(
+                outline
+                round
+                dense
+                size='md'
+                icon='add'
+                color='teal-6'
+                style='margin-top: -38px; margin-right: 5px;'
+              )
+                q-popup-proxy
+                  q-form(@submit='handleSubmit' @reset='handleReset')
+                    .col.q-pa-md
+                      q-select.q-mb-md(
+                        flat dense label='Номенклатура' :options='nomenclature'
+                        v-model='currentNomenclature.name' @input='setNomenclature($event)'
+                        ref='nomenclatureSelect'
+                      )
+                        template(v-slot:option='scope')
+                          q-item(v-bind='scope.itemProps' v-on="scope.itemEvents")
+                            q-item-section
+                              span {{scope.opt.name}}
+                      .row.flex.justify-end
+                        q-btn( label='Ok' color='primary' outline v-close-popup type='submit' )
+                        q-btn( label='закрыть' color='teal' flat v-close-popup  type='reset')
+        .float-right.q-mb-md
+          q-btn.q-mr-md(outline color='primary' label='Сохранить' @click='addDivision')
+          q-btn(outline color='primary' label='Отмена' @click='closeForm')
 </template>
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import { Notify } from 'quasar'
+import Vue from 'vue'
 
 export default {
   name: 'DivisionsWorkPlace',
@@ -72,13 +119,19 @@ export default {
         name: '',
         city: '',
         address: '',
-        factor: 0
+        factor: 0,
+        nomenclature: []
+      },
+      currentNomenclature: {
+        id: '',
+        name: ''
       }
     }
   },
   computed: {
     ...mapGetters({
       divisions: 'division/getDivisionsList',
+      nomenclature: 'nomenclature/getNomenclatureList',
       isAdmin: 'auth/isAdmin'
     }),
     formName () {
@@ -88,6 +141,7 @@ export default {
   methods: {
     ...mapActions({
       listDivision: 'division/listDivisions',
+      listNomenclature: 'nomenclature/listNomenclature',
       pushDivisionInDB: 'division/addDivision',
       editDivision: 'division/editDivision',
       deleteDivision: 'division/deleteDivision'
@@ -129,10 +183,35 @@ export default {
       if (!this.isAdmin) return
       this.item = { ...division }
       this.showDialog = true
+    },
+    handleSubmit () {
+      if (!this.item.nomenclature) this.item.nomenclature = []
+      if (this.item && this.item.nomenclature && (!this.item.nomenclature.length || !this.item.nomenclature.find(el => el.id === this.currentNomenclature.id))) {
+        console.log(this.item.nomenclature, this.currentNomenclature)
+        if (this.currentNomenclature && this.currentNomenclature.name) this.item.nomenclature.push({ ...this.currentNomenclature })
+        console.log(this.item.nomenclature, this.currentNomenclature)
+      }
+      this.handleReset()
+    },
+    handleReset () {
+      this.currentNomenclature = {}
+    },
+    setNomenclature (val) {
+      this.currentNomenclature.name = val.name
+      this.currentNomenclature.id = val.id
+      this.$refs.nomenclatureSelect.hidePopup()
+    },
+    removeItem (idx) {
+      console.log('item', idx)
+      this.$nextTick(() => {
+        this.item.nomenclature.splice(idx, 1)
+      })
+      console.log(this.item.nomenclature)
     }
   },
   created () {
     this.listDivision('')
+    this.listNomenclature('')
   }
 }
 </script>
