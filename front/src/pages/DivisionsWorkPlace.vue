@@ -42,7 +42,7 @@
             .text-h6 {{formName}}
             q-btn(flat fab-mini color='grey' icon='close' @click='closeForm')
         q-card-section.q-pt-none
-          q-form.row.q-col-gutter-sm
+          .row.q-col-gutter-sm
             .col-8
               q-input(flat dense label='Название' v-model='item.name')
             .col-4
@@ -62,11 +62,12 @@
             .col-12
               .text-teal Список номенклатуры точки
               q-list.relative-position(:bordered='!!nomenclature.length' separator dense style='min-height: 100px;')
-                .flex.justify-center.content-center(v-if='!item.nomenclature || !item.nomenclature.length' style='height: 100px')
+                .flex.justify-center.content-center(v-if='!divisionNomenclature || !divisionNomenclature.length' style='height: 100px')
                   .text-body2.text-primary Отсутствует, привязанная к точке номенклатура
-                q-item(v-ripple v-for='(item, idx) in item.nomenclature' :key='idx')
+                q-item(v-for='(item, idx) in divisionNomenclature' :key='idx')
                   q-item-section(side top)
                     q-btn(icon='remove' fab-mini flat color='primary' @click='removeItem(idx)')
+                      q-tooltip Удалить номенклатуру
                   q-item-section {{item && item.name ? item.name : ''}}
                   q-separator
               q-btn.float-right(
@@ -101,7 +102,6 @@
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import { Notify } from 'quasar'
-import Vue from 'vue'
 
 export default {
   name: 'DivisionsWorkPlace',
@@ -122,6 +122,7 @@ export default {
         factor: 0,
         nomenclature: []
       },
+      divisionNomenclature: [],
       currentNomenclature: {
         id: '',
         name: ''
@@ -172,8 +173,10 @@ export default {
         name: '',
         city: '',
         address: '',
-        factor: 0
+        factor: 0,
+        nomenclature: []
       }
+      this.divisionNomenclature = []
     },
     closeForm () {
       this.showDialog = false
@@ -182,14 +185,15 @@ export default {
     openEditDivision (division) {
       if (!this.isAdmin) return
       this.item = { ...division }
+      this.divisionNomenclature = division.nomenclature ? division.nomenclature : []
       this.showDialog = true
     },
     handleSubmit () {
-      if (!this.item.nomenclature) this.item.nomenclature = []
-      if (this.item && this.item.nomenclature && (!this.item.nomenclature.length || !this.item.nomenclature.find(el => el.id === this.currentNomenclature.id))) {
-        console.log(this.item.nomenclature, this.currentNomenclature)
-        if (this.currentNomenclature && this.currentNomenclature.name) this.item.nomenclature.push({ ...this.currentNomenclature })
-        console.log(this.item.nomenclature, this.currentNomenclature)
+      if (!this.divisionNomenclature) this.divisionNomenclature = []
+      if (this.divisionNomenclature && (!this.divisionNomenclature.length || !this.divisionNomenclature.find(el => el.id === this.currentNomenclature.id))) {
+        console.log(this.divisionNomenclature, this.currentNomenclature)
+        if (this.currentNomenclature && this.currentNomenclature.name) this.divisionNomenclature.push({ ...this.currentNomenclature })
+        console.log(this.divisionNomenclature, this.currentNomenclature)
       }
       this.handleReset()
     },
@@ -204,14 +208,30 @@ export default {
     removeItem (idx) {
       console.log('item', idx)
       this.$nextTick(() => {
-        this.item.nomenclature.splice(idx, 1)
+        this.divisionNomenclature.splice(idx, 1)
       })
-      console.log(this.item.nomenclature)
+      console.log(this.divisionNomenclature)
+    },
+    async init () {
+      try {
+        this.$q.loading.show()
+        await this.listNomenclature('')
+        await this.listDivision('')
+      } catch (err) {
+        console.error(err)
+      } finally {
+        this.$q.loading.hide()
+      }
     }
   },
   created () {
-    this.listDivision('')
-    this.listNomenclature('')
+    this.init()
   }
 }
 </script>
+<style>
+.workplace_scroll {
+  height: calc(100vh - 150px);
+  width: 100%;
+}
+</style>

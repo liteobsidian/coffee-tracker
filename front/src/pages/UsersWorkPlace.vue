@@ -77,7 +77,6 @@ export default {
   },
   computed: {
     ...mapGetters({
-      organization: 'organization/getSelected',
       userId: 'auth/getUserId',
       users: 'auth/getUsersList',
       isAdmin: 'auth/isAdmin'

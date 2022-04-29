@@ -1,11 +1,11 @@
 import db from '@db'
 import { ADD, DELETE, EDIT, LIST } from './sql'
 
-export const addDivisionDB = async ({ name, address, city, factor }) => {
+export const addDivisionDB = async ({ name, address, city, factor, nomenclature }) => {
   try {
     if (!name) throw new Error('Отсутствует название подразделения')
     const { rowCount, rows } = await db.query(ADD,
-      [name, address, city, factor]
+      [name, address, city, factor, JSON.stringify(nomenclature)]
     )
     if (!rowCount) throw new Error(`Ошибка при внесении подразделения ${name}.`)
     return rows[0]
@@ -13,11 +13,11 @@ export const addDivisionDB = async ({ name, address, city, factor }) => {
     return Promise.reject(error)
   }
 }
-export const editDivisionDB = async ({ id, name, address, city, factor }) => {
+export const editDivisionDB = async ({ id, name, address, city, factor, nomenclature }) => {
   try {
     if (!name) throw new Error('Отсутствует название подразделения')
     const { rowCount, rows } = await db.query(EDIT,
-      [id, name, address, city, factor]
+      [id, name, address, city, factor, nomenclature]
     )
     if (!rowCount) throw new Error('Ошибка при изменении подразделения')
     return rows[0]
