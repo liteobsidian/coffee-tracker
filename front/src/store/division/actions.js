@@ -1,6 +1,19 @@
 import axios from 'axios'
 import { Notify } from 'quasar'
 
+export async function getDivision ({ dispatch, commit }, id) {
+  try {
+    const { data } = await axios({
+      url: `/api/v1/division/${id}`,
+      method: 'get'
+    })
+    return data
+  } catch (err) {
+    console.error('Произошла ошибка при попытке добавить подразделение', err.message || err)
+    return Promise.reject(err.response.data.message ? err : err.message)
+  }
+}
+
 export async function addDivision ({ dispatch, commit }, payload) {
   try {
     const { data } = await axios({

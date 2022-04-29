@@ -191,9 +191,8 @@ export default {
     handleSubmit () {
       if (!this.divisionNomenclature) this.divisionNomenclature = []
       if (this.divisionNomenclature && (!this.divisionNomenclature.length || !this.divisionNomenclature.find(el => el.id === this.currentNomenclature.id))) {
-        console.log(this.divisionNomenclature, this.currentNomenclature)
         if (this.currentNomenclature && this.currentNomenclature.name) this.divisionNomenclature.push({ ...this.currentNomenclature })
-        console.log(this.divisionNomenclature, this.currentNomenclature)
+        this.item.nomenclature = this.divisionNomenclature
       }
       this.handleReset()
     },
@@ -209,6 +208,7 @@ export default {
       console.log('item', idx)
       this.$nextTick(() => {
         this.divisionNomenclature.splice(idx, 1)
+        this.item.nomenclature = this.divisionNomenclature
       })
       console.log(this.divisionNomenclature)
     },

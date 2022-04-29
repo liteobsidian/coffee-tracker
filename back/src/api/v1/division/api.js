@@ -2,10 +2,19 @@ import {
   addDivision,
   deleteDivision,
   editDivision,
-  getDivisions
+  getDivisions,
+  getDivision
 } from './controller'
 
 export default {
+  async get (req, res, next) {
+    try {
+      const division = await getDivision(req.params)
+      res.json({ success: true, message: 'Подразделение получено!', division })
+    } catch (err) {
+      next(err)
+    }
+  },
   async add (req, res, next) {
     try {
       const division = await addDivision(req.body)

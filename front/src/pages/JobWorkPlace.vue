@@ -86,7 +86,7 @@
                       span.text-primary.q-ml-sm {{this.nextDivision}}
                     .col-6
                       q-btn.float-right(
-                        v-if='!currentWorkday.date_close'
+                        v-if='!currentWorkday.date_close && !!currentWorkday.date_open'
                         outline
                         :disable='!(+currentWorkday.uncash_sum + +cashSum)'
                         label='Закрыть смену'

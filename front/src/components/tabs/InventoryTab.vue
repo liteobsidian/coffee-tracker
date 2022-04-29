@@ -1,6 +1,6 @@
 <template lang='pug'>
   div
-    div.full-width.full-height(v-if='!inventoryList || !inventoryList.length')
+    div.disclaimer(v-if='!inventoryList || !inventoryList.length')
       .text-h6.text-center.text-primary.self-center Нет ни одной заполненной инвентаризации.
     q-markup-table.sticky_workdays_table.scroll(flat bordered separator='horizontal' v-if='inventoryList && inventoryList.length')
       thead
@@ -15,16 +15,13 @@
           td.text-right {{item.division_name}}
           td.text-right {{item.user_name}}
           td.text-right {{item.total_sum}}
-    q-page-sticky(
-      position='bottom-right'
-      :offset='[120, 16]'
-    )
-      q-btn(
+    q-btn.absolute-bottom-right(
+        style='bottom: 14px; right: 20px;'
         v-if='isAdmin'
         fab
         icon='add'
         color='teal-6'
-        @click='showDialog=true'
+        @click='openEditInventory'
       )
     q-dialog(v-model='showDialog')
       q-card.q-px-sm(style='width: 600px')
@@ -34,20 +31,30 @@
             q-btn(flat fab-mini color='grey' icon='close' @click='closeForm')
         q-card-section.q-pt-none
           .row.q-col-gutter-sm
+            .col-6
+              select-date(
+                label='Дата *'
+                dense
+                v-model='normalizeInventoryDate'
+                @clear='item.date=null'
+                ref='field01'
+                :rules='[ value => !!value || "Укажите дату"]'
+              )
+            .col-6
+              q-select(flat dense label='Точка' :options='divisions' v-model='item.division_name' @input='setDivision($event)' ref='divisionSelect')
+                template(v-slot:option='scope')
+                  q-item(v-bind='scope.itemProps' v-on="scope.itemEvents")
+                    q-item-section
+                      span {{scope.opt.name}}
             .col-12
-              q-input(flat dense label='Название' v-model='item.name')
-            .col-4
-              q-input(flat dense label='Единица измерения' v-model='item.unit')
-            .col-4
-              q-input.q-mb-lg(flat dense label='Цена' mask='#.##' fill-mask='0'  reverse-fill-mask v-model='item.cost')
-            .col-4.self-center
-              q-checkbox.text-teal.text-caption.q-mb-lg(flat dense v-model='item.is_perishable') Скоропортящийся продукт
-            .col-4
-              q-input.q-mb-lg(flat dense label='Сумма закупки' mask='#.##' fill-mask='0'  reverse-fill-mask v-model='item.lot_value')
-            .col-4
-              q-input.q-mb-lg(flat dense label='Минимальное количество' mask='#' fill-mask='0'  reverse-fill-mask v-model='item.min_count')
-            .col-4
-              q-input.q-mb-lg(flat dense label='Максимальное количество' mask='#' fill-mask='0'  reverse-fill-mask v-model='item.max_count')
+              .text-teal Укажите количество оставшейся номенклатуры
+              q-list.relative-position(:bordered='!!divisionNomenclature.length' separator dense style='min-height: 100px;')
+                .flex.justify-center.content-center(v-if='!divisionNomenclature || !divisionNomenclature.length' style='height: 100px')
+                  .text-body2.text-primary Отсутствует, привязанная к точке номенклатура
+                q-item(v-for='(item, idx) in divisionNomenclature' :key='idx')
+                  q-item-section(side top)
+                  q-item-section {{item && item.name ? item.name : ''}}
+                  q-separator
           .float-right.q-mb-md
             q-btn.q-mr-md(outline color='primary' label='Сохранить' @click='saveInventory')
             q-btn(outline color='primary' label='Отмена' @click='closeForm')
@@ -56,7 +63,10 @@
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import { Notify } from 'quasar'
+import SelectDate from '@components/inputs/SelectDate'
+import Vue from 'vue'
 
+const normalizeDate = (value) => value ? value.split(' ')[0].split('-').reverse().join('.') : ''
 export default {
   name: 'InventoryTab',
   data () {
@@ -71,14 +81,24 @@ export default {
         user_name: '',
         total_sum: '',
         nomenclature: []
-      }
+      },
+      divisionNomenclature: []
     }
   },
   computed: {
     ...mapGetters({
       inventoryList: 'inventory/getInventoryList',
-      isAdmin: 'auth/isAdmin'
+      isAdmin: 'auth/isAdmin',
+      divisions: 'division/getDivisionsList'
     }),
+    normalizeInventoryDate: {
+      get: function () {
+        return normalizeDate(this.item.date)
+      },
+      set: function (val) {
+        Vue.set(this.item, 'date', val)
+      }
+    },
     formName () {
       return !this.item.id ? 'Заполнение инвентаризации' : 'Изменение инвентаризации'
     }
@@ -88,7 +108,10 @@ export default {
       listInventory: 'inventory/listInventory',
       addInventory: 'inventory/addInventory',
       updateInventory: 'inventory/updateInventory',
-      deleteInventory: 'inventory/deleteInventory'
+      deleteInventory: 'inventory/deleteInventory',
+      updateDivisionsList: 'division/listDivisions',
+      loadWorkdayByUser: 'workday/loadWorkdayByUser',
+      getDivision: 'division/getDivision'
     }),
     showNotify (message) {
       Notify.create(message)
@@ -130,15 +153,38 @@ export default {
       this.showDialog = false
       this.clearForm()
     },
-    openEditInventory (inventory) {
-      if (!this.isAdmin) return
-      this.item = { ...inventory }
-      this.showDialog = true
+    async openEditInventory (inventory) {
+      try {
+        this.$q.loading.show()
+        if (!this.isAdmin) return
+        if (!this.divisions || !this.divisions.length) await this.updateDivisionsList('')
+        const workday = await this.loadWorkdayByUser()
+        if (inventory) this.item = { ...inventory }
+        if (workday && workday.date) this.item.date = workday.date
+        if (workday && workday.division_id) this.item.division_id = workday.division_id
+        if (workday && workday.division_name) this.item.division_name = workday.division_name
+        this.divisionNomenclature = this.item.nomenclature ? this.item.nomenclature : ''
+        if (!this.item.id && workday && workday.division_id) {
+          const { division } = await this.getDivision(workday.division_id)
+          this.divisionNomenclature = division.nomenclature.map(el => { return { ...el, count: 0 } })
+        }
+        this.showDialog = true
+      } catch (err) {
+        console.error(err)
+      } finally {
+        this.$q.loading.hide()
+      }
+    },
+    setDivision (val) {
+      this.item.division_name = val.name
+      this.item.division_id = val.id
+      this.$refs.divisionSelect.hidePopup()
     }
   },
   created () {
     this.listInventory()
-  }
+  },
+  components: { 'select-date': SelectDate }
 }
 </script>
 
@@ -146,5 +192,12 @@ export default {
 .workplace_scroll {
   height: calc(100vh - 150px);
   width: 100%;
+}
+.disclaimer {
+  height: calc(100vh - 200px);
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 </style>

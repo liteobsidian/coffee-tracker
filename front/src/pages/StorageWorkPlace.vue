@@ -8,7 +8,7 @@
         q-splitter.storage_splitter(v-model='splitterModel')
           template(v-slot:before='')
             q-tabs.text-teal(v-model='tab' vertical active-class='text-primary')
-              q-tab(name='storage' icon='inventory_2' label='Склад')
+              q-tab(name='storage' icon='warehouse' label='Склад')
               q-tab(name='request' icon='local_shipping' label='Заявки')
               q-tab(name='invent' icon='inventory' label='Инвентаризация')
           template(v-slot:after='')
