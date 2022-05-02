@@ -48,12 +48,20 @@
                       span {{scope.opt.name}}
             .col-12
               .text-teal Укажите количество оставшейся номенклатуры
-              q-list.relative-position(:bordered='!!divisionNomenclature.length' separator dense style='min-height: 100px;')
+              q-list.relative-position.q-mb-md(:bordered='!!divisionNomenclature.length' separator dense style='min-height: 100px; max-height: 300px;')
                 .flex.justify-center.content-center(v-if='!divisionNomenclature || !divisionNomenclature.length' style='height: 100px')
                   .text-body2.text-primary Отсутствует, привязанная к точке номенклатура
-                q-item(v-for='(item, idx) in divisionNomenclature' :key='idx')
-                  q-item-section(side top)
+                q-item.q-pb-sm(v-for='(item, idx) in divisionNomenclature' :key='idx')
                   q-item-section {{item && item.name ? item.name : ''}}
+                  q-item-section
+                    q-input(
+                      input-class='text-right'
+                      flat dense label='Остаток'
+                      mask='#' fill-mask='0'  reverse-fill-mask
+                      v-model='item.count'
+                    )
+                      template(v-slot:append bottom)
+                        .text-body1.text-teal.q-mt-md {{item.unit}}
                   q-separator
           .float-right.q-mb-md
             q-btn.q-mr-md(outline color='primary' label='Сохранить' @click='saveInventory')
@@ -118,6 +126,7 @@ export default {
     },
     async saveInventory () {
       // eslint-disable-next-line camelcase
+      this.item.nomenclature = this.divisionNomenclature
       const { id, date, division_id: divisionId, nomenclature } = this.item
       const isAdd = !id
       if (!date) this.$q.notify({ message: 'Введите дату ', type: 'info' })
@@ -163,7 +172,9 @@ export default {
         if (workday && workday.date) this.item.date = workday.date
         if (workday && workday.division_id) this.item.division_id = workday.division_id
         if (workday && workday.division_name) this.item.division_name = workday.division_name
-        this.divisionNomenclature = this.item.nomenclature ? this.item.nomenclature : ''
+        this.divisionNomenclature = this.item.nomenclature
+          ? this.item.nomenclature.map(el => { return { ...el, count: 0 } })
+          : []
         if (!this.item.id && workday && workday.division_id) {
           const { division } = await this.getDivision(workday.division_id)
           this.divisionNomenclature = division.nomenclature.map(el => { return { ...el, count: 0 } })
@@ -178,6 +189,9 @@ export default {
     setDivision (val) {
       this.item.division_name = val.name
       this.item.division_id = val.id
+      this.divisionNomenclature = val.nomenclature && val.nomenclature.length
+        ? val.nomenclature.map(el => { return { ...el, count: 0 } })
+        : []
       this.$refs.divisionSelect.hidePopup()
     }
   },
