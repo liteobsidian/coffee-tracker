@@ -1,48 +1,45 @@
-import { addDivisionDB, addDivisionNomenclatureDB, editDivisionDB, deleteDivisionDB, getDivisionsDB, getDivisionDB } from './db'
+import { addInventoryDB, editInventoryDB, deleteInventoryDB, getInventoryListDB, getInventoryDB } from './db'
 
-export const getDivision = async ({ id }) => {
+export const getInventory = async ({ id }) => {
   try {
-    const division = await getDivisionDB({ id })
-    if (!division) throw new Error(`Ошибка загрузки подразделения с id: ${id}`)
-    return division
+    const inventory = await getInventoryDB({ id })
+    if (!inventory) throw new Error(`Ошибка загрузки инвентаризации с id: ${id}`)
+    return inventory
   } catch (error) {
     return Promise.reject(error)
   }
 }
-export const addDivision = async ({ name, address, city, factor, nomenclature }) => {
+export const addInventory = async ({ date, division_id, division_name, nomenclature }) => {
   try {
-    const division = await addDivisionDB({ name, address, city, factor })
-    if (!division) throw new Error(`Ошибка при попытке внесения подразделения ${name}.`)
-    console.log(division)
-    const nomenclatureAdd = await addDivisionNomenclatureDB(division.id, nomenclature)
-    if (!division) throw new Error(`Ошибка при попытке внесения номенклатуры подразделения ${name}.`)
-    console.log(nomenclatureAdd)
-    return division
+    const inventory = await addInventoryDB({ date, division_id, division_name, nomenclature })
+    if (!inventory) throw new Error(`Ошибка при попытке внесения инвентаризации ${date}.`)
+    console.log(inventory)
+    return inventory
   } catch (error) {
     return Promise.reject(error)
   }
 }
-export const editDivision = async ({ id, name, address, city, factor, nomenclature }) => {
+export const editInventory = async ({ id, date, division_id, division_name, nomenclature }) => {
   try {
-    const division = await editDivisionDB({ id, name, address, city, factor, nomenclature })
-    if (!division) throw new Error(`Ошибка при попытке изменения подразделения ${name}.`)
-    return division
+    const inventory = await editInventoryDB({ id, date, division_id, division_name, nomenclature })
+    if (!inventory) throw new Error(`Ошибка при попытке изменения инвентаризации ${date}.`)
+    return inventory
   } catch (error) {
     return Promise.reject(error)
   }
 }
-export const deleteDivision = async ({ id }) => {
+export const deleteInventory = async ({ id }) => {
   try {
-    const division = await deleteDivisionDB(id)
-    if (!division) throw new Error('Ошибка при попытке удаления подразделения.')
-    return division
+    const inventory = await deleteInventoryDB(id)
+    if (!inventory) throw new Error('Ошибка при попытке удаления инвентаризации.')
+    return inventory
   } catch (error) {
     return Promise.reject(error)
   }
 }
-export const getDivisions = async (data) => {
+export const getInventoryList = async (data) => {
   try {
-    const list = await getDivisionsDB(data)
+    const list = await getInventoryListDB(data)
     return list
   } catch (error) {
     return Promise.reject(error)

@@ -6,7 +6,7 @@ const router = Router()
 
 router.get('/:id', authUser, api.get)
 router.post('/add', authUser, api.add)
-router.post('/list', authUser, api.divisions)
+router.post('/list', authUser, api.inventoryList)
 router.put('/edit', authUser, api.edit)
 router.delete('/', authUser, api.delete)
 

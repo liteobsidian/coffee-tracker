@@ -1,70 +1,58 @@
 import db from '@db'
-import { GET, ADD, ADD_NOMENCLATURE, DELETE, EDIT, LIST } from './sql'
+import { GET, ADD, DELETE, EDIT, LIST } from './sql'
 
-export const getDivisionDB = async ({ id }) => {
+export const getInventoryDB = async ({ id }) => {
   try {
-    if (!id) throw new Error('Отсутствует id подразделения')
+    if (!id) throw new Error('Отсутствует id инвентаризации')
     const { rowCount, rows } = await db.query(GET,
       [id]
     )
-    if (!rowCount) throw new Error(`Ошибка при внесении подразделения ID: ${id}.`)
+    if (!rowCount) throw new Error(`Ошибка при внесении инвентаризации ID: ${id}.`)
     return rows[0]
   } catch (error) {
     return Promise.reject(error)
   }
 }
 
-export const addDivisionDB = async ({ name, address, city, factor }) => {
+export const addInventoryDB = async ({ date, division_id, division_name, nomenclature }) => {
   try {
-    if (!name) throw new Error('Отсутствует название подразделения')
+    if (!date) throw new Error('Отсутствует дата инвентаризации')
+    if (!division_id) throw new Error('Отсутствует id точки')
     const { rowCount, rows } = await db.query(ADD,
-      [name, address, city, factor]
+      [date, division_id, division_name, JSON.stringify(nomenclature)]
     )
-    if (!rowCount) throw new Error(`Ошибка при внесении подразделения ${name}.`)
+    if (!rowCount) throw new Error(`Ошибка при внесении инвентаризации ${date}.`)
     return rows[0]
   } catch (error) {
     return Promise.reject(error)
   }
 }
-export const addDivisionNomenclatureDB = async (division_id, nomenclature) => {
+export const editInventoryDB = async ({ id, date, division_id, division_name, nomenclature }) => {
   try {
-    console.log(division_id, nomenclature)
-    if (!division_id) throw new Error('Отсутствует подразделение')
-    if (!nomenclature || !nomenclature.length) return
-    const { rowCount, rows } = await db.query(ADD_NOMENCLATURE,
-      [division_id, JSON.stringify(nomenclature)]
-    )
-    if (!rowCount) throw new Error('Ошибка при внесении номенклатуры.')
-    return rows
-  } catch (error) {
-    return Promise.reject(error)
-  }
-}
-export const editDivisionDB = async ({ id, name, address, city, factor, nomenclature }) => {
-  try {
-    if (!name) throw new Error('Отсутствует название подразделения')
+    if (!date) throw new Error('Отсутствует дата инвентаризации')
+    if (!division_id) throw new Error('Отсутствует id точки')
     const { rowCount, rows } = await db.query(EDIT,
-      [id, name, address, city, factor, JSON.stringify(nomenclature)]
+      [id, date, division_id, division_name, JSON.stringify(nomenclature)]
     )
-    if (!rowCount) throw new Error('Ошибка при изменении подразделения')
+    if (!rowCount) throw new Error('Ошибка при изменении инвентаризации')
     return rows[0]
   } catch (error) {
     return Promise.reject(error)
   }
 }
-export const deleteDivisionDB = async (id) => {
+export const deleteInventoryDB = async (id) => {
   try {
-    if (!id) throw new Error('Отсутствует id подразделения')
+    if (!id) throw new Error('Отсутствует id инвентаризации')
     const { rowCount, rows } = await db.query(DELETE,
       [id]
     )
-    if (!rowCount) throw new Error('Ошибка при удалении подразделения')
+    if (!rowCount) throw new Error('Ошибка при удалении инвентаризации')
     return rows[0]
   } catch (error) {
     return Promise.reject(error)
   }
 }
-export const getDivisionsDB = async ({ query = '' }) => {
+export const getInventoryListDB = async ({ query = '' }) => {
   try {
     const { rowCount, rows } = await db.query(LIST,
       [query]

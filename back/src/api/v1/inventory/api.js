@@ -1,48 +1,48 @@
 import {
-  addDivision,
-  deleteDivision,
-  editDivision,
-  getDivisions,
-  getDivision
+  addInventory,
+  deleteInventory,
+  editInventory,
+  getInventoryList,
+  getInventory
 } from './controller'
 
 export default {
   async get (req, res, next) {
     try {
-      const division = await getDivision(req.params)
-      res.json({ success: true, message: 'Подразделение получено!', division })
+      const division = await getInventory(req.params)
+      res.json({ success: true, message: 'Инвентаризация получена!', division })
     } catch (err) {
       next(err)
     }
   },
   async add (req, res, next) {
     try {
-      const division = await addDivision(req.body)
-      res.json({ success: true, message: 'Подразделение успешно добавлено!', divisionId: division.id })
+      const division = await addInventory(req.body)
+      res.json({ success: true, message: 'Инвентаризация успешно добавлена!', divisionId: division.id })
     } catch (err) {
       next(err)
     }
   },
   async edit (req, res, next) {
     try {
-      const division = await editDivision(req.body)
-      res.json({ success: true, message: 'Подразделение успешно изменено!', divisionId: division.id })
+      const division = await editInventory(req.body)
+      res.json({ success: true, message: 'Инвентаризация успешно изменена!', divisionId: division.id })
     } catch (err) {
       next(err)
     }
   },
   async delete (req, res, next) {
     try {
-      const division = await deleteDivision(req.query)
-      res.json({ success: true, message: 'Подразделение успешно удалено!', divisionId: division.id })
+      const division = await deleteInventory(req.query)
+      res.json({ success: true, message: 'Инвентаризация успешно удалена!', divisionId: division.id })
     } catch (err) {
       next(err)
     }
   },
-  async divisions (req, res, next) {
+  async inventoryList (req, res, next) {
     try {
-      const list = await getDivisions(req.body)
-      res.json({ success: true, message: 'Список подразделений успешно получен', list })
+      const list = await getInventoryList(req.body)
+      res.json({ success: true, message: 'Список документов инвентаризации успешно получен', list })
     } catch (err) {
       next(err)
     }
