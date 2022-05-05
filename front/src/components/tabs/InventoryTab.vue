@@ -15,7 +15,7 @@
           th.text-bold.text-teal.text-right Сумма
       tbody.scroll.bg-teal-1
         tr.cursor-pointer(v-for='(item, idx) in inventoryList' :key='idx' @click = 'openEditInventory(item)')
-          td.text-left {{item.date}}
+          td.text-left {{item.date.split('-').reverse().join('.')}}
           td.text-right {{item.division_name}}
           td.text-right {{item.user_name}}
           td.text-right {{item.total_sum}}
@@ -41,7 +41,7 @@
                 label='Дата *'
                 dense
                 v-model='normalizeInventoryDate'
-                @clear='item.date=null'
+                @clear='item.date=""'
                 ref='field01'
                 :rules='[ value => !!value || "Укажите дату"]'
               )
@@ -53,7 +53,7 @@
                       span {{scope.opt.name}}
             .col-12
               .text-teal Укажите количество оставшейся номенклатуры
-              q-list.relative-position.q-mb-md(:bordered='!!divisionNomenclature.length' separator dense style='min-height: 100px; max-height: 300px;')
+              q-list.relative-position.q-mb-md(:bordered='!!divisionNomenclature && !!divisionNomenclature.length' separator dense style='min-height: 100px; max-height: 300px;')
                 .flex.justify-center.content-center(v-if='!divisionNomenclature || !divisionNomenclature.length' style='height: 100px')
                   .text-body2.text-primary Отсутствует, привязанная к точке номенклатура
                 q-item.q-pb-sm(v-for='(item, idx) in divisionNomenclature' :key='idx')
@@ -130,26 +130,33 @@ export default {
       Notify.create(message)
     },
     async saveInventory () {
-      // eslint-disable-next-line camelcase
-      this.item.nomenclature = this.divisionNomenclature
-      const { id, date, division_id: divisionId, nomenclature } = this.item
-      const isAdd = !id
-      if (!date) this.$q.notify({ message: 'Введите дату ', type: 'info' })
-      if (!divisionId) this.$q.notify({ message: 'Укажите подразделение ', type: 'info' })
-      if (!nomenclature || !nomenclature.length) this.$q.notify({ message: 'В документе отсутствует номенклатура ', type: 'info' })
-      // eslint-disable-next-line camelcase
-      if (date && divisionId && nomenclature && nomenclature.length) {
-        try {
-          isAdd ? await this.addInventory(this.item) : await this.updateInventory(this.item)
-          this.clearForm()
-          this.showDialog = false
-          return
-        } catch (err) {
-          this.$q.notify(err && err.response && err.response.data ? err.response.data.message : 'Ошибка')
+      try {
+        this.$q.loading.show()
+        // eslint-disable-next-line camelcase
+        this.item.nomenclature = this.divisionNomenclature
+        const { id, date, division_id: divisionId, nomenclature } = this.item
+        const isAdd = !id
+        if (!date) this.$q.notify({ message: 'Введите дату ', type: 'info' })
+        if (!divisionId) this.$q.notify({ message: 'Укажите подразделение ', type: 'info' })
+        if (!nomenclature || !nomenclature.length) this.$q.notify({ message: 'В документе отсутствует номенклатура ', type: 'info' })
+        // eslint-disable-next-line camelcase
+        if (date && divisionId && nomenclature && nomenclature.length) {
+          try {
+            isAdd ? await this.addInventory(this.item) : await this.updateInventory(this.item)
+            this.clearForm()
+            this.showDialog = false
+            return
+          } catch (err) {
+            this.$q.notify(err && err.response && err.response.data ? err.response.data.message : 'Ошибка')
+          }
         }
+        console.error(`Не получилось ${isAdd ? 'добавить' : 'изменить'} документ инвентаризации`)
+        this.$q.notify({ message: `Не получилось ${isAdd ? 'добавить' : 'изменить'} документ инвентаризации`, color: 'primary' })
+      } catch (err) {
+        console.error(err)
+      } finally {
+        this.$q.loading.hide()
       }
-      console.error(`Не получилось ${isAdd ? 'добавить' : 'изменить'} документ инвентаризации`)
-      this.$q.notify({ message: `Не получилось ${isAdd ? 'добавить' : 'изменить'} документ инвентаризации`, color: 'primary' })
     },
     clearForm () {
       this.item = {
@@ -172,11 +179,12 @@ export default {
         this.$q.loading.show()
         if (!this.isAdmin) return
         if (!this.divisions || !this.divisions.length) await this.updateDivisionsList('')
-        const workday = await this.loadWorkdayByUser()
+        let workday = {}
         if (inventory) this.item = { ...inventory }
-        if (workday && workday.date) this.item.date = workday.date
-        if (workday && workday.division_id) this.item.division_id = workday.division_id
-        if (workday && workday.division_name) this.item.division_name = workday.division_name
+        if (!inventory.id) workday = await this.loadWorkdayByUser()
+        if (!inventory.id && workday && workday.date) this.normalizeInventoryDate = workday.date
+        if (!inventory.id && workday && workday.division_id) this.item.division_id = workday.division_id
+        if (!inventory.id && workday && workday.division_name) this.item.division_name = workday.division_name
         this.divisionNomenclature = this.item.nomenclature
           ? this.item.nomenclature.map(el => { return { ...el, count: el.count || 0 } })
           : []

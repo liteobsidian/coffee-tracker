@@ -15,24 +15,26 @@ export const getInventoryDB = async ({ id }) => {
 }
 
 export const addInventoryDB = async ({ date, division_id, userId, nomenclature }) => {
+  const client = await db.getClient()
   try {
-    await db.query('BEGIN')
-    await db.query('SET DateStyle = \'DMY\'')
+    await client.query('BEGIN')
+    await client.query('SET DateStyle = \'DMY\'')
     if (!date) throw new Error('Отсутствует дата инвентаризации')
     if (!division_id) throw new Error('Отсутствует id точки')
-    const { rowCount, rows } = await db.query(ADD,
+    const { rowCount, rows } = await client.query(ADD,
       [date, division_id, userId]
     )
     if (!rowCount) throw new Error(`Ошибка при внесении инвентаризации ${date}.`)
     if (!rows[0].id || !nomenclature.length) return rows[0]
-    const { rowCount: countRows } = await db.query(ADD_NOMENCLATURE, [rows[0].id, JSON.stringify(nomenclature)])
+    console.log('DDDDDDDIVISION ID = ', division_id)
+    const { rowCount: countRows } = await client.query(ADD_NOMENCLATURE, [rows[0].id, JSON.stringify(nomenclature)])
     if (!countRows) throw new Error('Ошибка при внесении номенклатуры')
     return rows[0]
   } catch (error) {
-    await db.query('ROLLBACK')
+    await client.query('ROLLBACK')
     return Promise.reject(error)
   } finally {
-    db.release()
+    client.release()
   }
 }
 export const editInventoryDB = async ({ id, date, division_id, userId, nomenclature }) => {
@@ -44,17 +46,17 @@ export const editInventoryDB = async ({ id, date, division_id, userId, nomenclat
     if (!date) throw new Error('Отсутствует дата инвентаризации')
     if (!division_id) throw new Error('Отсутствует id точки')
     console.log('Работает запрос редактирования', date)
-    const { rowCount, rows } = await db.query(EDIT,
+    const { rowCount, rows } = await client.query(EDIT,
       [id, date.split('.').reverse().join('-'), division_id, userId]
     )
     console.log('ADD row COUNT', rowCount)
     if (!rowCount) throw new Error('Ошибка при изменении инвентаризации')
-    const { rowCount: countRows } = await db.query(EDIT_NOMENCLATURE, [id, JSON.stringify(nomenclature)])
+    const { rowCount: countRows } = await client.query(EDIT_NOMENCLATURE, [id, JSON.stringify(nomenclature)])
     if (!countRows) throw new Error('Ошибка при изменении номенклатуры')
     return rows[0]
   } catch (error) {
-    return Promise.reject(error)
     await client.query('ROLLBACK')
+    return Promise.reject(error)
   } finally {
     client.release()
   }

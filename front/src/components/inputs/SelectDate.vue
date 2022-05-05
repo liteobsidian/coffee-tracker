@@ -25,7 +25,7 @@ const validateDate = (value) => {
   const arrD = value.split('.')
   arrD[1] -= 1
   const d = new Date(arrD[2], arrD[1], arrD[0])
-  if ((arrD[2].length === 4) && (d.getFullYear() === +arrD[2]) && (d.getMonth() === +arrD[1]) && (d.getDate() === +arrD[0])) {
+  if ((arrD[2] && arrD[2].length === 4) && (d.getFullYear() === +arrD[2]) && (d.getMonth() === +arrD[1]) && (d.getDate() === +arrD[0])) {
     return true
   } else {
     return false

@@ -5,6 +5,7 @@ import divRoutes from './division/routes'
 import nomRoutes from './nomenclature/routes'
 import workRoutes from './workday/routes'
 import inventoryRoutes from './inventory/routes'
+import remainsRoutes from './remains/routes'
 
 const router = Router()
 
@@ -21,5 +22,6 @@ router.use('/division', divRoutes)
 router.use('/nomenclature', nomRoutes)
 router.use('/workday', workRoutes)
 router.use('/inventory', inventoryRoutes)
+router.use('/remains', remainsRoutes)
 
 export default router
