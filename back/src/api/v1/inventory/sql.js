@@ -16,7 +16,7 @@ export const GET = `
   group by (a.id, a.date, a.division_id, a.user_id)
 `
 export const ADD = `
-  insert into inventory(date, division_id, user_id) values($1, $2, $3)
+  insert into inventory(date, division_id, user_id) values($1::date, $2, $3)
   returning id
 `
 export const ADD_NOMENCLATURE = `
@@ -27,15 +27,18 @@ export const ADD_NOMENCLATURE = `
 `
 
 export const EDIT = `
-  with del_nomenclature as (
-    delete from inventory_content where inventory_id = $1
-  ),  add_nomenclature as (
-    insert into inventory_content(inventory_id, nomenclature_id, count)
-      select $1::bigint as inventory_id, id as nomenclature_id, count
-      from jsonb_to_recordset($5) as a(id bigint, count bigint)
-  )
-  update inventory set date=$2, division_id=$3, user_id=$4 where id=$1
+  update inventory set date=$2::date, division_id=$3, user_id=$4 where id=$1
   returning *
+`
+
+export const EDIT_NOMENCLATURE = `
+  with del_nomenclature as (
+    delete from inventory_content where inventory_id = $1::bigint
+  )
+  insert into inventory_content(inventory_id, nomenclature_id, count)
+    select $1::bigint as inventory_id, id as nomenclature_id, count
+    from jsonb_to_recordset($2) as a(id bigint, count bigint)
+
 `
 export const DELETE = `
   with del_nomenclature as (

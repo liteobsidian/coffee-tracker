@@ -22,7 +22,7 @@ export const addInventory = async ({ date, division_id, userId, nomenclature }) 
 export const editInventory = async ({ id, date, division_id, userId, nomenclature }) => {
   try {
     const inventory = await editInventoryDB({ id, date, division_id, userId, nomenclature })
-    if (!inventory) throw new Error(`Ошибка при попытке изменения инвентаризации ${date}.`)
+    if (!inventory) throw new Error(`Ошибка при попытке изменения инвентаризации ${date}`)
     return inventory
   } catch (error) {
     return Promise.reject(error)

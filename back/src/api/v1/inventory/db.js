@@ -1,5 +1,5 @@
 import db from '@db'
-import { GET, ADD, ADD_NOMENCLATURE, DELETE, EDIT, LIST } from './sql'
+import { GET, ADD, ADD_NOMENCLATURE, EDIT_NOMENCLATURE, DELETE, EDIT, LIST } from './sql'
 
 export const getInventoryDB = async ({ id }) => {
   try {
@@ -16,6 +16,8 @@ export const getInventoryDB = async ({ id }) => {
 
 export const addInventoryDB = async ({ date, division_id, userId, nomenclature }) => {
   try {
+    await db.query('BEGIN')
+    await db.query('SET DateStyle = \'DMY\'')
     if (!date) throw new Error('Отсутствует дата инвентаризации')
     if (!division_id) throw new Error('Отсутствует id точки')
     const { rowCount, rows } = await db.query(ADD,
@@ -27,21 +29,34 @@ export const addInventoryDB = async ({ date, division_id, userId, nomenclature }
     if (!countRows) throw new Error('Ошибка при внесении номенклатуры')
     return rows[0]
   } catch (error) {
+    await db.query('ROLLBACK')
     return Promise.reject(error)
+  } finally {
+    db.release()
   }
 }
 export const editInventoryDB = async ({ id, date, division_id, userId, nomenclature }) => {
+  const client = await db.getClient()
   try {
+    await client.query('BEGIN')
+    await client.query('SET DateStyle = \'DMY\'')
+
     if (!date) throw new Error('Отсутствует дата инвентаризации')
     if (!division_id) throw new Error('Отсутствует id точки')
-    console.log({ id, date, division_id, userId, nomenclature })
+    console.log('Работает запрос редактирования', date)
     const { rowCount, rows } = await db.query(EDIT,
-      [id, date, division_id, userId, JSON.stringify(nomenclature)]
+      [id, date.split('.').reverse().join('-'), division_id, userId]
     )
+    console.log('ADD row COUNT', rowCount)
     if (!rowCount) throw new Error('Ошибка при изменении инвентаризации')
+    const { rowCount: countRows } = await db.query(EDIT_NOMENCLATURE, [id, JSON.stringify(nomenclature)])
+    if (!countRows) throw new Error('Ошибка при изменении номенклатуры')
     return rows[0]
   } catch (error) {
     return Promise.reject(error)
+    await client.query('ROLLBACK')
+  } finally {
+    client.release()
   }
 }
 export const deleteInventoryDB = async (id) => {

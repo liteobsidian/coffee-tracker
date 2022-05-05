@@ -4,7 +4,7 @@ import { DB_NAME, DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DEBUG } from '@config'
 types.setTypeParser(1114, str => str)
 types.setTypeParser(1082, str => str)
 
-const pool = new Pool({
+export const pool = new Pool({
   database: DB_NAME,
   host: DB_HOST,
   port: DB_PORT,
@@ -64,6 +64,7 @@ export default {
     }, 5000)
     // monkey patch the query method to keep track of the last query executed
     client.query = (...args) => {
+      console.log(args)
       client.lastQuery = args
       return query.apply(client, args)
     }
