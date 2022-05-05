@@ -79,11 +79,12 @@
                     span.text-teal.q-ml-sm {{currentWorkday.date_close}}
                 .col-12
                   .row
-                    .col-6
-                      span.text-teal Cледующая смена:
+                    .col-6(v-if='!!nextDate && !!nextDivision')
+                      span.text-teal Следующая смена:
                       span.text-primary.q-ml-sm {{this.nextDate}}
                       span.text-teal.q-ml-sm на точке:
                       span.text-primary.q-ml-sm {{this.nextDivision}}
+                    .col-6(v-else)
                     .col-6
                       q-btn.float-right(
                         v-if='!currentWorkday.date_close && !!currentWorkday.date_open'
@@ -200,10 +201,12 @@ export default {
       try {
         this.isLoading = true
         const workday = await this.getWorkdayByUser()
-        const { item } = await this.getNextWorkday()
-        this.nextDate = item.date
-        this.nextDivision = item.name
         this.currentWorkday = { ...workday, total: (+workday.cash_sum + +this.fixIncass).toFixed(2) }
+        const { item } = await this.getNextWorkday()
+        if (item) {
+          this.nextDate = item.date
+          this.nextDivision = item.name
+        }
       } catch (err) {
         console.error(err)
       } finally {

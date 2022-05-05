@@ -9,9 +9,9 @@ export const getInventory = async ({ id }) => {
     return Promise.reject(error)
   }
 }
-export const addInventory = async ({ date, division_id, division_name, nomenclature }) => {
+export const addInventory = async ({ date, division_id, userId, nomenclature }) => {
   try {
-    const inventory = await addInventoryDB({ date, division_id, division_name, nomenclature })
+    const inventory = await addInventoryDB({ date, division_id, userId, nomenclature })
     if (!inventory) throw new Error(`Ошибка при попытке внесения инвентаризации ${date}.`)
     console.log(inventory)
     return inventory
@@ -19,9 +19,9 @@ export const addInventory = async ({ date, division_id, division_name, nomenclat
     return Promise.reject(error)
   }
 }
-export const editInventory = async ({ id, date, division_id, division_name, nomenclature }) => {
+export const editInventory = async ({ id, date, division_id, userId, nomenclature }) => {
   try {
-    const inventory = await editInventoryDB({ id, date, division_id, division_name, nomenclature })
+    const inventory = await editInventoryDB({ id, date, division_id, userId, nomenclature })
     if (!inventory) throw new Error(`Ошибка при попытке изменения инвентаризации ${date}.`)
     return inventory
   } catch (error) {
@@ -39,8 +39,7 @@ export const deleteInventory = async ({ id }) => {
 }
 export const getInventoryList = async (data) => {
   try {
-    const list = await getInventoryListDB(data)
-    return list
+    return await getInventoryListDB(data)
   } catch (error) {
     return Promise.reject(error)
   }

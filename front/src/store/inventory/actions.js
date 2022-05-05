@@ -1,10 +1,11 @@
 import axios from 'axios'
 
-export async function listInventory ({ commit }) {
+export async function listInventory ({ commit }, query) {
   try {
     const { data } = await axios({
       url: '/api/v1/inventory/list',
-      method: 'get'
+      method: 'post',
+      data: { query }
     })
     commit('setInventoryList', data.list)
   } catch (err) {
@@ -31,7 +32,7 @@ export async function addInventory ({ dispatch }, payload) {
 export async function updateInventory ({ dispatch }, payload) {
   try {
     const { data } = await axios({
-      url: '/api/v1/inventory/update',
+      url: '/api/v1/inventory/edit',
       method: 'put',
       data: { ...payload }
     })

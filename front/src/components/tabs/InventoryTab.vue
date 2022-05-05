@@ -2,27 +2,32 @@
   div
     div.disclaimer(v-if='!inventoryList || !inventoryList.length')
       .text-h6.text-center.text-primary.self-center Нет ни одной заполненной инвентаризации.
-    q-markup-table.sticky_workdays_table.scroll(flat bordered separator='horizontal' v-if='inventoryList && inventoryList.length')
+    q-markup-table.sticky_inventory_table.scroll(
+      flat bordered
+      separator='horizontal'
+      v-if='inventoryList && inventoryList.length'
+    )
       thead
         tr
-          th.text-bold.text-white.text-left Дата
-          th.text-bold.text-white.text-right Точка
-          th.text-bold.text-white.text-right Пользователь
-          th.text-bold.text-white.text-right Сумма
+          th.text-bold.text-teal.text-left Дата
+          th.text-bold.text-teal.text-right Точка
+          th.text-bold.text-teal.text-right Пользователь
+          th.text-bold.text-teal.text-right Сумма
       tbody.scroll.bg-teal-1
-        tr.bg-teal-1.cursor-pointer(v-for='(item, idx) in inventoryList' :key='idx')
+        tr.cursor-pointer(v-for='(item, idx) in inventoryList' :key='idx' @click = 'openEditInventory(item)')
           td.text-left {{item.date}}
           td.text-right {{item.division_name}}
           td.text-right {{item.user_name}}
           td.text-right {{item.total_sum}}
     q-btn.absolute-bottom-right(
-        style='bottom: 14px; right: 20px;'
-        v-if='isAdmin'
-        fab
-        icon='add'
-        color='teal-6'
-        @click='openEditInventory'
-      )
+      style='bottom: 14px; right: 20px'
+      style.hover='opacity: 1'
+      v-if='isAdmin'
+      fab
+      icon='add'
+      color='teal-6'
+      @click='openEditInventory'
+    )
     q-dialog(v-model='showDialog')
       q-card.q-px-sm(style='width: 600px')
         q-card-section.q-mb-sm
@@ -173,7 +178,7 @@ export default {
         if (workday && workday.division_id) this.item.division_id = workday.division_id
         if (workday && workday.division_name) this.item.division_name = workday.division_name
         this.divisionNomenclature = this.item.nomenclature
-          ? this.item.nomenclature.map(el => { return { ...el, count: 0 } })
+          ? this.item.nomenclature.map(el => { return { ...el, count: el.count || 0 } })
           : []
         if (!this.item.id && workday && workday.division_id) {
           const { division } = await this.getDivision(workday.division_id)
@@ -196,7 +201,7 @@ export default {
     }
   },
   created () {
-    this.listInventory()
+    this.listInventory('')
   },
   components: { 'select-date': SelectDate }
 }
@@ -213,5 +218,18 @@ export default {
   display: flex;
   flex-direction: column;
   justify-content: center;
+}
+.sticky_inventory_table {
+  height: calc(100vh - 200px);
+}
+.sticky_inventory_table thead tr th {
+  position: sticky;
+  z-index: 1;
+}
+.sticky_inventory_table thead tr:first-child th {
+  top: 0
+}
+.sticky_inventory_table thead tr th {
+  top: 83px
 }
 </style>

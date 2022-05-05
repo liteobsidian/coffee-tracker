@@ -17,7 +17,7 @@ export default {
   },
   async add (req, res, next) {
     try {
-      const division = await addInventory(req.body)
+      const division = await addInventory({ ...req.body, userId: req.user.id })
       res.json({ success: true, message: 'Инвентаризация успешно добавлена!', divisionId: division.id })
     } catch (err) {
       next(err)
@@ -25,7 +25,7 @@ export default {
   },
   async edit (req, res, next) {
     try {
-      const division = await editInventory(req.body)
+      const division = await editInventory({ ...req.body, userId: req.user.id })
       res.json({ success: true, message: 'Инвентаризация успешно изменена!', divisionId: division.id })
     } catch (err) {
       next(err)

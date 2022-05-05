@@ -1,5 +1,5 @@
 import db from '@db'
-import { GET, ADD, DELETE, EDIT, LIST } from './sql'
+import { GET, ADD, ADD_NOMENCLATURE, DELETE, EDIT, LIST } from './sql'
 
 export const getInventoryDB = async ({ id }) => {
   try {
@@ -14,25 +14,29 @@ export const getInventoryDB = async ({ id }) => {
   }
 }
 
-export const addInventoryDB = async ({ date, division_id, division_name, nomenclature }) => {
+export const addInventoryDB = async ({ date, division_id, userId, nomenclature }) => {
   try {
     if (!date) throw new Error('Отсутствует дата инвентаризации')
     if (!division_id) throw new Error('Отсутствует id точки')
     const { rowCount, rows } = await db.query(ADD,
-      [date, division_id, division_name, JSON.stringify(nomenclature)]
+      [date, division_id, userId]
     )
     if (!rowCount) throw new Error(`Ошибка при внесении инвентаризации ${date}.`)
+    if (!rows[0].id || !nomenclature.length) return rows[0]
+    const { rowCount: countRows } = await db.query(ADD_NOMENCLATURE, [rows[0].id, JSON.stringify(nomenclature)])
+    if (!countRows) throw new Error('Ошибка при внесении номенклатуры')
     return rows[0]
   } catch (error) {
     return Promise.reject(error)
   }
 }
-export const editInventoryDB = async ({ id, date, division_id, division_name, nomenclature }) => {
+export const editInventoryDB = async ({ id, date, division_id, userId, nomenclature }) => {
   try {
     if (!date) throw new Error('Отсутствует дата инвентаризации')
     if (!division_id) throw new Error('Отсутствует id точки')
+    console.log({ id, date, division_id, userId, nomenclature })
     const { rowCount, rows } = await db.query(EDIT,
-      [id, date, division_id, division_name, JSON.stringify(nomenclature)]
+      [id, date, division_id, userId, JSON.stringify(nomenclature)]
     )
     if (!rowCount) throw new Error('Ошибка при изменении инвентаризации')
     return rows[0]
