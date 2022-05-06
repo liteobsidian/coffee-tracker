@@ -143,30 +143,23 @@ export default {
       Notify.create(message)
     },
     async saveInventory () {
+      this.item.nomenclature = this.divisionNomenclature
+      const { id, date, division_id: divisionId, nomenclature } = this.item
+      const isAdd = !id
       try {
         this.$q.loading.show()
-        // eslint-disable-next-line camelcase
-        this.item.nomenclature = this.divisionNomenclature
-        const { id, date, division_id: divisionId, nomenclature } = this.item
-        const isAdd = !id
         if (!date) this.$q.notify({ message: 'Введите дату ', type: 'info' })
         if (!divisionId) this.$q.notify({ message: 'Укажите подразделение ', type: 'info' })
         if (!nomenclature || !nomenclature.length) this.$q.notify({ message: 'В документе отсутствует номенклатура ', type: 'info' })
-        // eslint-disable-next-line camelcase
         if (date && divisionId && nomenclature && nomenclature.length) {
-          try {
-            isAdd ? await this.addInventory(this.item) : await this.updateInventory(this.item)
-            this.clearForm()
-            this.showDialog = false
-            return
-          } catch (err) {
-            this.$q.notify(err && err.response && err.response.data ? err.response.data.message : 'Ошибка')
-          }
+          isAdd ? await this.addInventory(this.item) : await this.updateInventory(this.item)
+          this.clearForm()
+          this.showDialog = false
         }
-        console.error(`Не получилось ${isAdd ? 'добавить' : 'изменить'} документ инвентаризации`)
-        this.$q.notify({ message: `Не получилось ${isAdd ? 'добавить' : 'изменить'} документ инвентаризации`, color: 'primary' })
       } catch (err) {
-        console.error(err)
+        this.$q.notify(err && err.response && err.response.data ? err.response.data.message : 'Ошибка')
+        this.$q.notify({ message: `Не получилось ${isAdd ? 'добавить' : 'изменить'} документ инвентаризации`, color: 'primary' })
+        console.error(`Не получилось ${isAdd ? 'добавить' : 'изменить'} документ инвентаризации`)
       } finally {
         this.$q.loading.hide()
       }

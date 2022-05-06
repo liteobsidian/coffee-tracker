@@ -20,7 +20,7 @@
           td.text-left {{item.date_create.split('-').reverse().join('.')}}
           td.text-right {{item.division_name}}
           td.text-right {{item.user_name}}
-          td.text-right {{item.sum}}
+          td.text-right {{item.total_sum || '0'}} р.
           td.text-left {{item.date_accept ? item.date_accept.split('-').reverse().join('.') : ''}}
           td.text-right
             q-btn(color='primary' flat round icon ='more_vert' @click.stop)
@@ -41,7 +41,7 @@
       fab
       icon='add'
       color='teal-6'
-      @click='openEditInventory'
+      @click='openEditRequest'
     )
     q-dialog(v-model='showDialog')
       q-card.q-px-sm(style='width: 600px')
@@ -51,32 +51,35 @@
             q-btn(flat fab-mini color='grey' icon='close' @click='closeEditRequest')
         q-card-section.q-pt-none
           .row.q-col-gutter-sm
-            .col-6
+            .col-4
               select-date(
                 label='Дата *'
                 dense
                 v-model='normalizeRequestDate'
-                @clear='item.date=""'
+                @clear='item.date_create=""'
                 ref='field01'
                 :rules='[ value => !!value || "Укажите дату"]'
               )
-            .col-6
-              q-select(flat dense label='Точка' :options='divisions' v-model='item.division_name' @input='setDivision($event)' ref='divisionSelect')
+            .col-4
+              q-select(flat dense label='Точка' :options='divisions' v-model='item.division_name'
+                @input='setDivision($event)' ref='divisionSelect' style='flex: auto')
                 template(v-slot:option='scope')
                   q-item(v-bind='scope.itemProps' v-on="scope.itemEvents")
                     q-item-section
                       span {{scope.opt.name}}
+            .col-4
+              q-checkbox.text-teal(color='teal' v-model='item.is_accept' disable label='Подтверждена')
             .col-12
-              .text-teal Укажите количество оставшейся номенклатуры
+              .text-teal Измените количество номенклатуры в заявке
               q-list.relative-position.q-mb-md(:bordered='!!divisionNomenclature && !!divisionNomenclature.length' separator dense style='min-height: 100px; max-height: 300px;')
                 .flex.justify-center.content-center(v-if='!divisionNomenclature || !divisionNomenclature.length' style='height: 100px')
-                  .text-body2.text-primary Отсутствует, привязанная к точке номенклатура
+                  .text-body2.text-primary {{item.division_id ? 'Отсутствует, привязанная к выбранной точке номенклатура' : 'Выберите точку'}}
                 q-item.q-pb-sm(v-for='(item, idx) in divisionNomenclature' :key='idx')
                   q-item-section {{item && item.name ? item.name : ''}}
                   q-item-section
                     q-input(
                       input-class='text-right'
-                      flat dense label='Остаток'
+                      flat dense label='Количество'
                       mask='#' fill-mask='0'  reverse-fill-mask
                     v-model='item.count'
                     )
@@ -84,12 +87,13 @@
                         .text-body1.text-teal.q-mt-md {{item.unit}}
                   q-separator
           .float-right.q-mb-md
-            q-btn.q-mr-md(outline color='primary' label='Сохранить' @click='saveInventory')
+            q-btn.q-mr-md(outline color='primary' label='Сохранить' @click='saveRequest')
             q-btn(outline color='primary' label='Отмена' @click='closeForm')
 </template>
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
+import SelectDate from '@components/inputs/SelectDate'
 import Vue from 'vue'
 
 const normalizeDate = (value) => value ? value.split(' ')[0].split('-').reverse().join('.') : ''
@@ -111,20 +115,22 @@ export default {
         date_accept: null,
         sum: '',
         nomenclature: []
-      }
+      },
+      divisionNomenclature: []
     }
   },
   computed: {
     ...mapGetters({
       isAdmin: 'auth/isAdmin',
-      requests: 'request/getRequestList'
+      requests: 'request/getRequestList',
+      divisions: 'division/getDivisionsList'
     }),
-    normalizeInventoryDate: {
+    normalizeRequestDate: {
       get: function () {
-        return normalizeDate(this.item.date)
+        return normalizeDate(this.item.date_create)
       },
       set: function (val) {
-        Vue.set(this.item, 'date', val)
+        Vue.set(this.item, 'date_create', val)
       }
     },
     formName () {
@@ -135,13 +141,15 @@ export default {
     ...mapActions({
       listRequests: 'request/listRequest',
       pushRequestInDB: 'request/addRequest',
-      editNomenclature: 'request/updateRequest',
-      deleteNomenclature: 'request/deleteRequest'
+      editRequest: 'request/updateRequest',
+      deleteRequest: 'request/deleteRequest',
+      updateDivisionsList: 'division/listDivisions'
     }),
     async initLoad () {
       try {
         this.$q.loading.show()
         await this.listRequests()
+        await this.updateDivisionsList()
       } catch (err) {
         this.$q.notify({ message: 'Ошибка обновления списка заявок', color: 'primary' })
       } finally {
@@ -149,7 +157,15 @@ export default {
       }
     },
     openEditRequest (item) {
-      if (item.id) this.item = { ...item }
+      if (item.id) {
+        this.item = { ...item }
+        this.divisionNomenclature = JSON.parse(JSON.stringify(item.nomenclature))
+      }
+      const currentDate = new Date()
+      const dotCurrentDate = currentDate.toLocaleDateString()
+      if (!item.date_accept) {
+        this.normalizeRequestDate = dotCurrentDate.split('.').reverse().join('-')
+      }
       this.showDialog = true
     },
     closeEditRequest () {
@@ -169,11 +185,48 @@ export default {
         sum: '',
         nomenclature: []
       }
+      this.divisionNomenclature = []
+    },
+    setDivision (val) {
+      this.item.division_name = val.name
+      this.item.division_id = val.id
+      this.divisionNomenclature = val.nomenclature && val.nomenclature.length
+        ? val.nomenclature.map(el => { return { ...el, count: 0 } })
+        : []
+      this.$refs.divisionSelect.hidePopup()
+    },
+    closeForm () {
+      this.showDialog = false
+      this.clearItem()
+    },
+    async saveRequest () {
+      this.item.nomenclature = this.divisionNomenclature
+      const { id, date_create: dateCreate, division_id: divisionId, nomenclature } = this.item
+      const isAdd = !id
+      try {
+        this.$q.loading.show()
+        if (!dateCreate) this.$q.notify({ message: 'Введите дату ', type: 'info' })
+        if (!divisionId) this.$q.notify({ message: 'Укажите подразделение ', type: 'info' })
+        if (!nomenclature || !nomenclature.length) this.$q.notify({ message: 'В документе отсутствует номенклатура', type: 'info' })
+        // eslint-disable-next-line camelcase
+        if (dateCreate && divisionId && nomenclature && nomenclature.length) {
+          isAdd ? await this.pushRequestInDB(this.item) : await this.editRequest(this.item)
+          this.clearItem()
+          this.showDialog = false
+        }
+      } catch (err) {
+        this.$q.notify(err && err.response && err.response.data ? err.response.data.message : 'Ошибка')
+        console.error(`Не получилось ${isAdd ? 'добавить' : 'изменить'} заявку`)
+        this.$q.notify({ message: `Не получилось ${isAdd ? 'добавить' : 'изменить'} заявку`, color: 'primary' })
+      } finally {
+        this.$q.loading.hide()
+      }
     }
   },
   created () {
     this.initLoad()
-  }
+  },
+  components: { 'select-date': SelectDate }
 }
 </script>
 
