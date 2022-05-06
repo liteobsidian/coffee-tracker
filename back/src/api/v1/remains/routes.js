@@ -4,6 +4,6 @@ import api from './api'
 
 const router = Router()
 
-router.get('/', authUser, api.list)
+router.get('/list', authUser, api.list)
 
 export default router

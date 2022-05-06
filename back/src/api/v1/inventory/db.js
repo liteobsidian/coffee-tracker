@@ -26,9 +26,9 @@ export const addInventoryDB = async ({ date, division_id, userId, nomenclature }
     )
     if (!rowCount) throw new Error(`Ошибка при внесении инвентаризации ${date}.`)
     if (!rows[0].id || !nomenclature.length) return rows[0]
-    console.log('DDDDDDDIVISION ID = ', division_id)
     const { rowCount: countRows } = await client.query(ADD_NOMENCLATURE, [rows[0].id, JSON.stringify(nomenclature)])
     if (!countRows) throw new Error('Ошибка при внесении номенклатуры')
+    client.query('COMMIT')
     return rows[0]
   } catch (error) {
     await client.query('ROLLBACK')
@@ -53,12 +53,13 @@ export const editInventoryDB = async ({ id, date, division_id, userId, nomenclat
     if (!rowCount) throw new Error('Ошибка при изменении инвентаризации')
     const { rowCount: countRows } = await client.query(EDIT_NOMENCLATURE, [id, JSON.stringify(nomenclature)])
     if (!countRows) throw new Error('Ошибка при изменении номенклатуры')
+    await client.query('COMMIT')
     return rows[0]
   } catch (error) {
     await client.query('ROLLBACK')
     return Promise.reject(error)
   } finally {
-    client.release()
+    await client.release()
   }
 }
 export const deleteInventoryDB = async (id) => {

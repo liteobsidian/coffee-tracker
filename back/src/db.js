@@ -22,13 +22,14 @@ export const pool = new Pool({
   const { rows } = await pool.query('select now()::timestamp')
   const { rows: dateStyle } = await pool.query('select \'30.01.2000\'::date;')
   console.log(dateStyle)
-  console.info('\x1b[36m%s\x1b[0m', 'Установлены текущий часовой пояс и формат даты. ', '\x1b[35m', rows[0].now)
+  console.info('\x1b[36m%s\x1b[0m', 'Установлены текущий часовой пояс и формат даты. ', '\x1b[35m', rows[0].now, '\x1b[0m')
   setInterval(async () => {
     await pool.query("SET DateStyle='DMY'")
     await pool.query("SET timezone = 'utc-3'")
     const { rows } = await pool.query('select now()::timestamp')
     const { rows: dateStyle } = await pool.query("select '30.01.2000'::date;")
-    console.info('\x1b[36m%s\x1b[0m', 'Обновлены форматы даты и времени', '\x1b[35m', rows[0].now, '\x1b[36m%s\x1b[0m', dateStyle[0].date)
+    console.info('\x1b[36m%s\x1b[0m', 'Обновлены форматы даты и времени', '\x1b[35m', rows[0].now,
+      '\x1b[36m', dateStyle[0].date, '\x1b[0m')
   }, 50000)
 })().catch(err =>
   setImmediate(() => {

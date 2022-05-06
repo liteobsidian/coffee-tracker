@@ -9,16 +9,29 @@
     )
       thead
         tr
-          th.text-bold.text-teal.text-left Дата
-          th.text-bold.text-teal.text-right Точка
-          th.text-bold.text-teal.text-right Пользователь
-          th.text-bold.text-teal.text-right Сумма
+          th.text-teal.text-left Дата
+          th.text-teal.text-right Точка
+          th.text-teal.text-right Пользователь
+          th.text-teal.text-right Сумма
+          th
       tbody.scroll.bg-teal-1
         tr.cursor-pointer(v-for='(item, idx) in inventoryList' :key='idx' @click = 'openEditInventory(item)')
           td.text-left {{item.date.split('-').reverse().join('.')}}
           td.text-right {{item.division_name}}
           td.text-right {{item.user_name}}
           td.text-right {{item.total_sum}}
+          td.text-right
+            q-btn(color='primary' flat round icon ='more_vert' @click.stop)
+              q-menu(
+                transition-show='scale'
+                transition-hide='scale'
+                auto-close
+              )
+                q-list(dense style='min-width:100px')
+                  q-item(clickable v-close-popup @click='openEditInventory(item)')
+                    q-item-section Открыть
+                  q-item(clickable v-close-popup @click='deleteInventory(item.id)')
+                    q-item-section Удалить
     q-btn.absolute-bottom-right(
       style='bottom: 14px; right: 20px'
       style.hover='opacity: 1'
@@ -233,6 +246,7 @@ export default {
 .sticky_inventory_table thead tr th {
   position: sticky;
   z-index: 1;
+  font-size: 14px !important;
 }
 .sticky_inventory_table thead tr:first-child th {
   top: 0

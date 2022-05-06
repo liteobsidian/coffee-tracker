@@ -33,7 +33,7 @@ export default {
   },
   async delete (req, res, next) {
     try {
-      const division = await deleteInventory(req.query)
+      const division = await deleteInventory(req.params)
       res.json({ success: true, message: 'Инвентаризация успешно удалена!', divisionId: division.id })
     } catch (err) {
       next(err)

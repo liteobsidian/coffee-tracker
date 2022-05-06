@@ -10,6 +10,7 @@ import loading from './loading'
 import workday from './workday'
 import storage from './storage'
 import inventory from './inventory'
+import request from './request'
 
 // import router from 'router'
 
@@ -34,7 +35,8 @@ export default function (/* { ssrContext } */) {
       nomenclature,
       workday,
       storage,
-      inventory
+      inventory,
+      request
     },
     plugins: [],
     strict: process.env.DEV
