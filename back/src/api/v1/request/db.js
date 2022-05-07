@@ -1,5 +1,5 @@
 import db from '@db'
-import { ADD, ADD_NOMENCLATURE, EDIT_NOMENCLATURE, DELETE, EDIT, LIST } from './sql'
+import { ADD, ADD_NOMENCLATURE, EDIT_NOMENCLATURE, DELETE, EDIT, LIST, ACCEPT } from './sql'
 
 export const addRequestDB = async ({ date_create, division_id, userId, nomenclature }) => {
   const client = await db.getClient()
@@ -48,6 +48,17 @@ export const editRequestDB = async ({ id, date_create, division_id, userId, is_a
     return Promise.reject(error)
   } finally {
     await client.release()
+  }
+}
+export const acceptRequestDB = async ({ id }) => {
+  try {
+    if (!id) throw new Error('Отсутствует id заявки')
+    const { rowCount, rows } = await db.query(ACCEPT, [id])
+    console.log('ADD row COUNT', rowCount)
+    if (!rowCount) throw new Error('Ошибка при подтверждении заявки')
+    return rows[0]
+  } catch (error) {
+    return Promise.reject(error)
   }
 }
 export const deleteRequestDB = async (id) => {

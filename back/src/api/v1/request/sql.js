@@ -14,6 +14,11 @@ export const EDIT = `
   returning *
 `
 
+export const ACCEPT = `
+  update request set is_accept=true, date_accept=current_date where id=$1
+  returning *
+`
+
 export const EDIT_NOMENCLATURE = `
   with del_nomenclature as (
     delete from request_content where request_id = $1::bigint

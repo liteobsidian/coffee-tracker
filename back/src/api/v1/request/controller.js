@@ -1,4 +1,4 @@
-import { addRequestDB, editRequestDB, deleteRequestDB, getRequestListDB } from './db'
+import { addRequestDB, editRequestDB, deleteRequestDB, getRequestListDB, acceptRequestDB } from './db'
 
 export const addRequest = async ({ date_create, division_id, userId, nomenclature }) => {
   try {
@@ -14,6 +14,15 @@ export const editRequest = async ({ id, date_create, division_id, userId, is_acc
   try {
     const request = await editRequestDB({ id, date_create, division_id, userId, is_accept, date_accept, nomenclature })
     if (!request) throw new Error(`Ошибка при попытке изменения заявки ${date_create}`)
+    return request
+  } catch (error) {
+    return Promise.reject(error)
+  }
+}
+export const acceptRequest = async ({ id }) => {
+  try {
+    const request = await acceptRequestDB({ id })
+    if (!request) throw new Error(`Ошибка при попытке подтверждения заявки заявки ${id}`)
     return request
   } catch (error) {
     return Promise.reject(error)

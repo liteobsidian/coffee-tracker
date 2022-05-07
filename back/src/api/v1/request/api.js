@@ -2,6 +2,7 @@ import {
   addRequest,
   deleteRequest,
   editRequest,
+  acceptRequest,
   getRequestList
 } from './controller'
 
@@ -18,6 +19,14 @@ export default {
     try {
       const request = await editRequest({ ...req.body, userId: req.user.id })
       res.json({ success: true, message: 'Заявка успешно изменена!', requestId: request.id })
+    } catch (err) {
+      next(err)
+    }
+  },
+  async accept (req, res, next) {
+    try {
+      const request = await acceptRequest({ ...req.body })
+      res.json({ success: true, message: 'Заявка успешно подтверждена!', requestId: request.id })
     } catch (err) {
       next(err)
     }

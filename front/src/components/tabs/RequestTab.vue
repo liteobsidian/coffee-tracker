@@ -15,6 +15,7 @@
           th.text-bold.text-teal.text-right Сумма
           th.text-bold.text-teal.text-right Дата приёмки
           th.text-bold.text-teal.text-right Статус
+          th
       tbody.scroll.bg-teal-1
         tr.cursor-pointer(v-for='(item, idx) in requests' :key='idx' @click = 'openEditRequest(item)')
           td.text-left {{item.date_create.split('-').reverse().join('.')}}
@@ -22,6 +23,8 @@
           td.text-right {{item.user_name}}
           td.text-right {{item.total_sum || '0'}} р.
           td.text-left {{item.date_accept ? item.date_accept.split('-').reverse().join('.') : ''}}
+          td.text-right
+            q-icon(v-if='item.is_accept' name='check' color='positive' size='sm')
           td.text-right
             q-btn(color='primary' flat round icon ='more_vert' @click.stop)
               q-menu(
@@ -87,6 +90,7 @@
                         .text-body1.text-teal.q-mt-md {{item.unit}}
                   q-separator
           .float-right.q-mb-md
+            q-btn.q-mr-md(v-if='item.id && !item.is_accept' outline color='primary' label='Подтвердить' @click='acceptRequest')
             q-btn.q-mr-md(outline color='primary' label='Сохранить' @click='saveRequest')
             q-btn(outline color='primary' label='Отмена' @click='closeForm')
 </template>
@@ -143,7 +147,8 @@ export default {
       pushRequestInDB: 'request/addRequest',
       editRequest: 'request/updateRequest',
       deleteRequest: 'request/deleteRequest',
-      updateDivisionsList: 'division/listDivisions'
+      updateDivisionsList: 'division/listDivisions',
+      accept: 'request/acceptRequest'
     }),
     async initLoad () {
       try {
@@ -218,6 +223,19 @@ export default {
         this.$q.notify(err && err.response && err.response.data ? err.response.data.message : 'Ошибка')
         console.error(`Не получилось ${isAdd ? 'добавить' : 'изменить'} заявку`)
         this.$q.notify({ message: `Не получилось ${isAdd ? 'добавить' : 'изменить'} заявку`, color: 'primary' })
+      } finally {
+        this.$q.loading.hide()
+      }
+    },
+    async acceptRequest () {
+      try {
+        this.$q.loading.show()
+        await this.accept(this.item.id)
+        this.showDialog = false
+        this.clearItem()
+      } catch (err) {
+        this.$q.notify({ message: 'Ошибка подтверждения заявки' })
+        console.error(err)
       } finally {
         this.$q.loading.hide()
       }

@@ -56,3 +56,18 @@ export async function deleteRequest ({ dispatch }, id) {
     return Promise.reject(err.response.data.message ? err : err.message)
   }
 }
+
+export async function acceptRequest ({ dispatch }, id) {
+  try {
+    const { data } = await axios({
+      url: '/api/v1/request/accept',
+      method: 'put',
+      data: { id }
+    })
+    await dispatch('listRequest')
+    return data
+  } catch (err) {
+    console.error('Произошла ошибка при попытке подтвердить заявку', err.message || err)
+    return Promise.reject(err.response.data.message ? err : err.message)
+  }
+}
