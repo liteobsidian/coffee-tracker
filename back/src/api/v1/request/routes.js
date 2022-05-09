@@ -5,6 +5,7 @@ import api from './api'
 const router = Router()
 
 router.get('/list', authUser, api.requestList)
+router.get('/need-list', authUser, api.needCountNomenclature)
 router.post('/add', authUser, api.add)
 router.put('/edit', authUser, api.edit)
 router.put('/accept', authUser, api.accept)

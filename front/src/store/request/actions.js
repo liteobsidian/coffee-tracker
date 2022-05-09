@@ -1,14 +1,28 @@
 import axios from 'axios'
 
-export async function listRequest ({ commit }) {
+export async function listRequest ({ dispatch, commit }) {
   try {
     const { data } = await axios({
       url: '/api/v1/request/list',
       method: 'get'
     })
+    await dispatch('needNomenclatureList')
     commit('setRequestList', data.list)
   } catch (err) {
     console.error('Произошла ошибка при попытке загрузить список заявок', err.message || err)
+    return Promise.reject(err.response.data.message ? err : err.message)
+  }
+}
+
+export async function needNomenclatureList ({ commit }) {
+  try {
+    const { data } = await axios({
+      url: '/api/v1/request/need-list',
+      method: 'get'
+    })
+    commit('setNeedNomenclatureList', data.list)
+  } catch (err) {
+    console.error('Произошла ошибка при попытке загрузить список количества недостающей номенклатуры', err.message || err)
     return Promise.reject(err.response.data.message ? err : err.message)
   }
 }

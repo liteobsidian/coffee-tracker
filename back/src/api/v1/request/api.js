@@ -3,7 +3,8 @@ import {
   deleteRequest,
   editRequest,
   acceptRequest,
-  getRequestList
+  getRequestList,
+  getNeedCountNomenclature
 } from './controller'
 
 export default {
@@ -42,6 +43,14 @@ export default {
   async requestList (req, res, next) {
     try {
       const list = await getRequestList(req.user)
+      res.json({ success: true, message: 'Список заявок успешно получен', list })
+    } catch (err) {
+      next(err)
+    }
+  },
+  async needCountNomenclature (req, res, next) {
+    try {
+      const list = await getNeedCountNomenclature(req.user)
       res.json({ success: true, message: 'Список заявок успешно получен', list })
     } catch (err) {
       next(err)

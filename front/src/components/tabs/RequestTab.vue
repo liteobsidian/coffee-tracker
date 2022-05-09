@@ -127,7 +127,8 @@ export default {
     ...mapGetters({
       isAdmin: 'auth/isAdmin',
       requests: 'request/getRequestList',
-      divisions: 'division/getDivisionsList'
+      divisions: 'division/getDivisionsList',
+      needNomenclature: 'request/getNeedNomenclatureList'
     }),
     normalizeRequestDate: {
       get: function () {
@@ -198,6 +199,9 @@ export default {
       this.divisionNomenclature = val.nomenclature && val.nomenclature.length
         ? val.nomenclature.map(el => { return { ...el, count: 0 } })
         : []
+      const needList = this.needNomenclature.find(el => el.division_id === val.id)
+      console.log('needList', needList)
+      if (needList && needList.nomenclature && needList.nomenclature.length) this.divisionNomenclature = needList.nomenclature
       this.$refs.divisionSelect.hidePopup()
     },
     closeForm () {

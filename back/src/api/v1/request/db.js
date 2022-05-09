@@ -1,5 +1,5 @@
 import db from '@db'
-import { ADD, ADD_NOMENCLATURE, EDIT_NOMENCLATURE, DELETE, EDIT, LIST, ACCEPT } from './sql'
+import { ADD, ADD_NOMENCLATURE, EDIT_NOMENCLATURE, DELETE, EDIT, LIST, ACCEPT, NEED_COUNT_NOMENCLATURE } from './sql'
 
 export const addRequestDB = async ({ date_create, division_id, userId, nomenclature }) => {
   const client = await db.getClient()
@@ -77,6 +77,15 @@ export const getRequestListDB = async ({ query = '' }) => {
   try {
     const { rowCount, rows } = await db.query(LIST)
     if (!rowCount) throw new Error('Ошибка загрузки списка заявок.')
+    return rows
+  } catch (error) {
+    return Promise.reject(error)
+  }
+}
+export const getNeedCountNomenclatureDB = async () => {
+  try {
+    const { rowCount, rows } = await db.query(NEED_COUNT_NOMENCLATURE)
+    if (!rowCount) throw new Error('Ошибка загрузки списка количества недостающей номенклатуры.')
     return rows
   } catch (error) {
     return Promise.reject(error)

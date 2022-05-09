@@ -1,9 +1,3 @@
-export const GET_STYLE = `
-SHOW datestyle
-`
-export const SET_STYLE = `
-SET datestyle = 'DMY'
-`
 export const ADD = `
   insert into workday(
     date, auth_user_id, division_id, uncash_sum, cash_sum,
@@ -26,8 +20,8 @@ export const DELETE = `
 export const LIST = `
   select a.id, to_char(a.date::timestamp, 'DD.MM.YYYY') as date, a.auth_user_id as user_id,
          b.name as user_name, c.name as division_name, a.division_id, a.uncash_sum,
-         a.cash_sum, to_char(a.date_open, 'dd.mm.yyyy hh:MI') as date_open,
-         to_char(a.date_close, 'dd.mm.yyyy hh:MI') as date_close
+         a.cash_sum, to_char(a.date_open, 'dd.mm.yyyy hh24:MI') as date_open,
+         to_char(a.date_close, 'dd.mm.yyyy hh24:MI') as date_close
   from workday a
   left join auth_users b on a.auth_user_id = b.id
   left join division c on a.division_id = c.id
@@ -38,8 +32,8 @@ export const LIST = `
 export const GET = `
   select a.id, to_char(a.date, 'DD.MM.YYYY') as date, a.auth_user_id as user_id,
          b.name as user_name, c.name as division_name, a.division_id, a.uncash_sum,
-         a.cash_sum, to_char(a.date_open, 'DD.MM.YYYY HH:MI') as date_open,
-         to_char(a.date_close, 'DD.MM.YYYY HH:MI') as date_close
+         a.cash_sum, to_char(a.date_open, 'DD.MM.YYYY HH24:MI') as date_open,
+         to_char(a.date_close, 'DD.MM.YYYY HH24:MI') as date_close
   from workday a
   left join auth_users b on a.auth_user_id = b.id
   left join division c on a.division_id = c.id
@@ -56,6 +50,10 @@ export const END = `
   update workday set date_close = now()::timestamp, uncash_sum = $2, cash_sum = $3
     where date::date = current_date::date and auth_user_id = $1
     returning id
+`
+
+export const UPDATE_FACTOR = `
+  select update_division_factor()
 `
 
 export const NEXT = `

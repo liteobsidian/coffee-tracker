@@ -1,4 +1,4 @@
-import { addRequestDB, editRequestDB, deleteRequestDB, getRequestListDB, acceptRequestDB } from './db'
+import { addRequestDB, editRequestDB, deleteRequestDB, getRequestListDB, acceptRequestDB, getNeedCountNomenclatureDB } from './db'
 
 export const addRequest = async ({ date_create, division_id, userId, nomenclature }) => {
   try {
@@ -40,6 +40,13 @@ export const deleteRequest = async ({ id }) => {
 export const getRequestList = async (data) => {
   try {
     return await getRequestListDB(data)
+  } catch (error) {
+    return Promise.reject(error)
+  }
+}
+export const getNeedCountNomenclature = async (data) => {
+  try {
+    return await getNeedCountNomenclatureDB(data)
   } catch (error) {
     return Promise.reject(error)
   }

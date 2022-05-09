@@ -1,5 +1,5 @@
 import db from '@db'
-import { SET_STYLE, GET_STYLE, START, GET, ADD, DELETE, EDIT, LIST, END, NEXT } from './sql'
+import { START, GET, ADD, DELETE, EDIT, LIST, END, NEXT, UPDATE_FACTOR } from './sql'
 
 export const getUserWorkdayDB = async ({ id = '' }) => {
   try {
@@ -15,8 +15,6 @@ export const getUserWorkdayDB = async ({ id = '' }) => {
 export const addWorkdayDB = async ({ date, user_id, division_id, uncash_sum, cash_sum, date_open, date_close }) => {
   try {
     if (!date) throw new Error('Отсутствует дата смены')
-    // const { rows: r } = await db.query(GET_STYLE)
-    // if (r && r[0] && !!r[0].DateStyle && (r[0].DateStyle === 'ISO, MDY')) await db.query(SET_STYLE)
     const { rowCount, rows } = await db.query(ADD,
       [date, user_id, division_id, uncash_sum, cash_sum, date_open, date_close]
     )
@@ -32,6 +30,8 @@ export const editWorkdayDB = async ({ id, date, user_id, division_id, uncash_sum
     const { rowCount, rows } = await db.query(EDIT,
       [id, date, user_id, division_id, uncash_sum, cash_sum, date_open, date_close]
     )
+    const { rows: statusUpdate } = await db.query(UPDATE_FACTOR)
+    console.log(statusUpdate[0])
     if (!rowCount) throw new Error('Ошибка при изменении смены')
     return rows[0]
   } catch (error) {
@@ -77,6 +77,8 @@ export const endDayDB = async ({ userId, uncash_sum, cash_sum }) => {
     const { rows } = await db.query(END,
       [userId, uncash_sum, cash_sum]
     )
+    const { rows: statusUpdate } = await db.query(UPDATE_FACTOR)
+    console.log(statusUpdate[0])
     return rows
   } catch (error) {
     return Promise.reject(error)
