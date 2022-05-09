@@ -15,6 +15,7 @@ const children = MAIN_MENU.map(el => {
       if (el.page === 'WorkdaysWorkPlace') return import('@pages/WorkdaysWorkPlace')
       if (el.page === 'JobWorkPlace') return import('@pages/JobWorkPlace')
       if (el.page === 'StorageWorkPlace') return import('@pages/StorageWorkPlace')
+      if (el.page === 'ReportsWorkPlace') return import('@pages/ReportsWorkPlace')
     },
     props
   }
@@ -32,14 +33,7 @@ const routes = [
     meta: { requiresAuth: true },
     redirect: '/job',
     component: () => import('@layouts/MainLayout'),
-    children: [
-      ...children,
-      {
-        name: 'Панель администратора',
-        path: 'dashboard',
-        component: () => import('@pages/DashboardWorkPlace')
-      }
-    ]
+    children
   }
 ]
 

@@ -7,6 +7,7 @@ import workRoutes from './workday/routes'
 import inventoryRoutes from './inventory/routes'
 import remainsRoutes from './remains/routes'
 import requestRoutes from './request/routes'
+import reportsRoutes from './reports/routes'
 
 const router = Router()
 
@@ -25,5 +26,6 @@ router.use('/workday', workRoutes)
 router.use('/inventory', inventoryRoutes)
 router.use('/remains', remainsRoutes)
 router.use('/request', requestRoutes)
+router.use('/reports', reportsRoutes)
 
 export default router

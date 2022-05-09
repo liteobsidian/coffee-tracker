@@ -40,6 +40,13 @@ export const MAIN_MENU = [
     path: 'storage',
     icon: 'storefront',
     page: 'StorageWorkPlace'
+  },
+  {
+    title: 'Отчёты',
+    label: 'Загрузка отчётов',
+    path: 'report',
+    icon: 'description',
+    page: 'ReportsWorkPlace'
   }
   // ,
   // {
