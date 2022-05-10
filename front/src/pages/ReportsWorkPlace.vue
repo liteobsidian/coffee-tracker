@@ -8,7 +8,7 @@
           q-scroll-area.workplace_scroll
             .col-12
               q-list(bordered)
-                q-item(clickable outline v-for='(report, idx) in reports' :key='idx' @click='openReportForm(report.method)')
+                q-item(clickable outline v-for='(report, idx) in reports' :key='idx' @click='openReportForm(report)')
                   q-item-section( avatar )
                     q-icon(color='primary' name='description')
                   q-item-section {{report.label}}
@@ -19,7 +19,7 @@
             .text-h6 Укажите временной период для формирования отчёта
             q-btn(flat fab-mini color='grey' icon='close' @click='closeForm')
         q-card-section.q-pt-none
-          .row.q-col-gutter-sm
+          .row.q-col-gutter-sm.q-mb-md
             .col-6
               select-date(
                 label='Начало'
@@ -60,16 +60,19 @@ export default {
       dateStart: null,
       dateEnd: null,
       selectedMethod: null,
+      selectedDescription: '',
       reports: [
         {
           id: 1,
           label: 'Отчёт для налоговой',
-          method: 'report_nalog'
+          method: 'report_nalog',
+          description: 'Отчёт о выручке по дням'
         },
         {
           id: 2,
           label: 'Отчёт о работе сотрудников',
-          method: 'report_user'
+          method: 'report_user',
+          description: 'Отчёт о работе сотрудников по дням'
         }
       ]
     }
@@ -83,18 +86,28 @@ export default {
     }
   },
   methods: {
-    ...mapActions({}),
+    ...mapActions({
+      getReport: 'reports/getReport'
+    }),
     showNotify (message) {
       Notify.create(message)
     },
     closeForm () {
       this.showDialog = false
     },
-    openReportForm (method) {
+    openReportForm ({ method, description }) {
       this.showDialog = true
       this.selectedMethod = method
+      this.selectedDescription = description
     },
-    printReport () {
+    async printReport () {
+      const { list: report } = await this.getReport({
+        method: this.selectedMethod,
+        dateStart: this.dateStart || null,
+        dateEnd: this.dateEnd || null,
+        description: this.selectedDescription || null
+      })
+      console.log(report)
       this.showNotify('Печать отчёта')
     }
   },
