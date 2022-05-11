@@ -4,49 +4,56 @@ export const MAIN_MENU = [
     label: 'Внесение/изменение пользователей',
     path: 'users',
     icon: 'people',
-    page: 'UsersWorkPlace'
+    page: 'UsersWorkPlace',
+    roles: ['admin']
   },
   {
     title: 'Кофейни',
     label: 'Список торговых точек',
     path: 'divisions',
     icon: 'other_houses',
-    page: 'DivisionsWorkPlace'
+    page: 'DivisionsWorkPlace',
+    roles: ['admin']
   },
   {
     title: 'Номенклатура',
     label: 'Список номенклатуры',
     path: 'nomenclature',
     icon: 'category',
-    page: 'NomenclatureWorkPlace'
+    page: 'NomenclatureWorkPlace',
+    roles: ['admin']
   },
   {
     title: 'График',
     label: 'Назначение смен сотрудникам',
     path: 'workdays',
     icon: 'edit_calendar',
-    page: 'WorkdaysWorkPlace'
+    page: 'WorkdaysWorkPlace',
+    roles: ['admin']
   },
   {
     title: 'Смена',
     label: 'Открытие/закрытие смены',
     path: 'job',
     icon: 'badge',
-    page: 'JobWorkPlace'
+    page: 'JobWorkPlace',
+    roles: ['user']
   },
   {
     title: 'Учет',
     label: 'Ведение складского учёта',
     path: 'storage',
     icon: 'storefront',
-    page: 'StorageWorkPlace'
+    page: 'StorageWorkPlace',
+    roles: ['user', 'admin']
   },
   {
     title: 'Отчёты',
     label: 'Загрузка отчётов',
     path: 'report',
     icon: 'description',
-    page: 'ReportsWorkPlace'
+    page: 'ReportsWorkPlace',
+    roles: ['admin']
   }
   // ,
   // {

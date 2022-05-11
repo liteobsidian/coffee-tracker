@@ -21,6 +21,7 @@
         :key='index'
         clickable
         :to=`item.path`
+        v-if='item.roles.includes(role)'
       )
         q-item-section(avatar)
           q-icon(:name='item.icon' class='text-primary' size='1.5rem')
@@ -59,7 +60,10 @@ export default {
     }
   },
   computed: {
-    ...mapGetters({ profile: 'auth/getProfile' })
+    ...mapGetters({ profile: 'auth/getProfile', isAdmin: 'auth/isAdmin' }),
+    role () {
+      return this.isAdmin ? 'admin' : 'user'
+    }
   },
   menu: MAIN_MENU,
   mixins: [systemLogout]
