@@ -26,7 +26,7 @@ export default {
   },
   async accept (req, res, next) {
     try {
-      const request = await acceptRequest({ ...req.body })
+      const request = await acceptRequest({ ...req.body, userId: req.user.id })
       res.json({ success: true, message: 'Заявка успешно подтверждена!', requestId: request.id })
     } catch (err) {
       next(err)

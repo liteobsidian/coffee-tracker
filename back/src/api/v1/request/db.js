@@ -50,10 +50,10 @@ export const editRequestDB = async ({ id, date_create, division_id, userId, is_a
     await client.release()
   }
 }
-export const acceptRequestDB = async ({ id }) => {
+export const acceptRequestDB = async ({ id, userId = null }) => {
   try {
     if (!id) throw new Error('Отсутствует id заявки')
-    const { rowCount, rows } = await db.query(ACCEPT, [id])
+    const { rowCount, rows } = await db.query(ACCEPT, [id, userId])
     console.log('ADD row COUNT', rowCount)
     if (!rowCount) throw new Error('Ошибка при подтверждении заявки')
     return rows[0]

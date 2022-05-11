@@ -19,9 +19,9 @@ export const editRequest = async ({ id, date_create, division_id, userId, is_acc
     return Promise.reject(error)
   }
 }
-export const acceptRequest = async ({ id }) => {
+export const acceptRequest = async ({ id, userId }) => {
   try {
-    const request = await acceptRequestDB({ id })
+    const request = await acceptRequestDB({ id, userId })
     if (!request) throw new Error(`Ошибка при попытке подтверждения заявки заявки ${id}`)
     return request
   } catch (error) {

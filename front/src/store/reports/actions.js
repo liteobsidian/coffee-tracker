@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-export async function getReport ({ commit }, { method, dateStart, dateEnd, description }) {
+export async function getReport ({ commit }, { method, dateStart, dateEnd, description, head }) {
   try {
     const { data } = await axios({
       url: '/api/v1/reports',
@@ -9,7 +9,8 @@ export async function getReport ({ commit }, { method, dateStart, dateEnd, descr
         method,
         dateStart,
         dateEnd,
-        description
+        description,
+        head
       },
       responseType: 'blob'
     })

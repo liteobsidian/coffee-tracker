@@ -15,7 +15,7 @@ export const EDIT = `
 `
 
 export const ACCEPT = `
-  update request set is_accept=true, date_accept=current_date where id=$1
+  update request set is_accept=true, date_accept=current_date, user_accept_id = $2 where id=$1
   returning *
 `
 
@@ -38,7 +38,8 @@ export const DELETE = `
 `
 
 export const LIST = `
-  select a.id, a.date_create, a.division_id, d.name as division_name, a.user_id, e.name as user_name, a.is_accept, a.date_accept,
+  select a.id, a.date_create, a.division_id, d.name as division_name, a.user_id, a.user_accept_id, e.name as user_name,
+         f.name as user_accept_name, a.is_accept, a.date_accept,
          case when count(b.nomenclature_id) <> 0
                 then jsonb_agg(jsonb_build_object('id', b.nomenclature_id, 'name', c.name, 'unit', c.unit, 'count', b.count))
               else '[]'::jsonb
@@ -46,9 +47,11 @@ export const LIST = `
   from request a
          left join division d on a.division_id = d.id
          left join auth_users e on a.user_id = e.id
+         left join auth_users f on a.user_accept_id = f.id
          left join request_content as b on a.id = b.request_id
          left join nomenclature as c on b.nomenclature_id = c.id
-  group by (a.id, a.date_create, a.division_id, d.name, a.user_id, e.name, a.is_accept, a.date_create, a.date_accept)
+  group by (a.id, a.date_create, a.division_id, d.name, a.user_id, a.user_accept_id, e.name, f.name, a.is_accept,
+            a.date_create, a.date_accept)
   order by a.date_create, d.name;
 `
 

@@ -11,7 +11,8 @@
         tr
           th.text-bold.text-teal.text-left Дата заявки
           th.text-bold.text-teal.text-right Точка
-          th.text-bold.text-teal.text-right Пользователь
+          th.text-bold.text-teal.text-right Создал
+          th.text-bold.text-teal.text-right Принял
           th.text-bold.text-teal.text-right Сумма
           th.text-bold.text-teal.text-right Дата приёмки
           th.text-bold.text-teal.text-right Статус
@@ -21,6 +22,7 @@
           td.text-left {{item.date_create.split('-').reverse().join('.')}}
           td.text-right {{item.division_name}}
           td.text-right {{item.user_name}}
+          td.text-right {{item.user_accept_name}}
           td.text-right {{item.total_sum || '0'}} р.
           td.text-left {{item.date_accept ? item.date_accept.split('-').reverse().join('.') : ''}}
           td.text-right
@@ -114,7 +116,9 @@ export default {
         division_id: '',
         division_name: '',
         user_id: '',
+        user_accept_id: '',
         user_name: '',
+        user_accept_name: '',
         is_accept: false,
         date_accept: null,
         sum: '',
@@ -185,7 +189,9 @@ export default {
         division_id: '',
         division_name: '',
         user_id: '',
+        user_accept_id: '',
         user_name: '',
+        user_accept_name: '',
         is_accept: false,
         date_accept: null,
         sum: '',

@@ -47,7 +47,7 @@ import { Notify } from 'quasar'
 import SelectDate from '@components/inputs/SelectDate'
 
 export default {
-  name: 'NomenclatureWorkPlace',
+  name: 'ReportsWorkPlace',
   props: {
     listType: {
       type: String,
@@ -61,18 +61,21 @@ export default {
       dateEnd: null,
       selectedMethod: null,
       selectedDescription: '',
+      selectedHead: '',
       reports: [
         {
           id: 1,
           label: 'Отчёт для налоговой',
           method: 'report_nalog',
-          description: 'Отчёт о выручке по дням'
+          description: 'Отчёт о выручке по дням',
+          head: ['Дата смены', 'Идентификатор точки', 'Название точки', 'Выручка за день', 'Выручка точки за выбранный период']
         },
         {
           id: 2,
           label: 'Отчёт о работе сотрудников',
           method: 'report_user',
-          description: 'Отчёт о работе сотрудников по дням'
+          description: 'Отчёт о выручке сотрудников на разных точках',
+          head: ['Пользователь', 'Точка', 'Проработано часов', 'Выручка за указанный период']
         }
       ]
     }
@@ -95,17 +98,19 @@ export default {
     closeForm () {
       this.showDialog = false
     },
-    openReportForm ({ method, description }) {
+    openReportForm ({ method, description, head }) {
       this.showDialog = true
       this.selectedMethod = method
       this.selectedDescription = description
+      this.selectedHead = head
     },
     async printReport () {
       const { list: report } = await this.getReport({
         method: this.selectedMethod,
         dateStart: this.dateStart || null,
         dateEnd: this.dateEnd || null,
-        description: this.selectedDescription || null
+        description: this.selectedDescription || null,
+        head: this.selectedHead || null
       })
       console.log(report)
       this.showNotify('Печать отчёта')
