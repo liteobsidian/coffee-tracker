@@ -30,12 +30,11 @@
                 q-list(dense style='min-width:100px')
                   q-item(clickable v-close-popup @click='openEditInventory(item)')
                     q-item-section Открыть
-                  q-item(clickable v-close-popup @click='deleteInventory(item.id)')
+                  q-item(v-if='isAdmin' clickable v-close-popup @click='deleteInventory(item.id)')
                     q-item-section Удалить
     q-btn.absolute-bottom-right(
       style='bottom: 14px; right: 20px'
       style.hover='opacity: 1'
-      v-if='isAdmin'
       fab
       icon='add'
       color='teal-6'
@@ -183,7 +182,6 @@ export default {
     async openEditInventory (inventory) {
       try {
         this.$q.loading.show()
-        if (!this.isAdmin) return
         if (!this.divisions || !this.divisions.length) await this.updateDivisionsList('')
         let workday = {}
         if (inventory) this.item = { ...inventory }

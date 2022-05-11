@@ -131,7 +131,7 @@ module.exports = function (ctx) {
       manifest: {
         name: 'Coffee.Tracker',
         short_name: 'Coffee.Tracker',
-        description: 'Приложение для загрузки статистических данных',
+        description: 'Приложение для ведения учёта в кофейнях',
         display: 'standalone',
         orientation: 'portrait',
         background_color: '#ffffff',

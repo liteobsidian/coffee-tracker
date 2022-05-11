@@ -31,7 +31,7 @@ const routes = [
   {
     path: '/',
     meta: { requiresAuth: true },
-    redirect: '/job',
+    redirect: '/storage',
     component: () => import('@layouts/MainLayout'),
     children
   }

@@ -37,12 +37,11 @@
                 q-list(dense style='min-width:100px')
                   q-item(clickable v-close-popup @click='openEditRequest(item)')
                     q-item-section Открыть
-                  q-item(clickable v-close-popup @click='deleteRequest(item.id)')
+                  q-item(v-if='isAdmin' clickable v-close-popup @click='deleteRequest(item.id)')
                     q-item-section Удалить
     q-btn.absolute-bottom-right(
       style='bottom: 14px; right: 20px'
       style.hover='opacity: 1'
-      v-if='isAdmin'
       fab
       icon='add'
       color='teal-6'

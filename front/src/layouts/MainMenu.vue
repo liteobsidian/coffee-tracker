@@ -13,8 +13,8 @@
           .col-12
             q-item-section(avatar)
               q-avatar(color='white' style='height: 60px; width: 60px;')
-                span.text-primary {{ profile.name ? profile.name.split(' ').map(el => el[0]).join('') : '' }}
-            h6.q-mb-none.q-mt-xs.text-white {{ profile.name }}
+                span(style='color: rgb(201 111 0)') {{ profile.name ? profile.name.split(' ').map(el => el[0]).join('') : '' }}
+            h6.q-mb-none.q-mt-xs.text-white(style='text-shadow: 1px 1px 3px black;') {{ profile.name }}
     q-list(padding).text-teal-10
       q-item(
         v-for='(item,index) in $options.menu'

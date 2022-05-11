@@ -43,7 +43,7 @@
 
 <script>
 
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 
 export default {
   name: 'LoginPage',
@@ -54,6 +54,14 @@ export default {
         password: ''
       },
       showPassword: false
+    }
+  },
+  computed: {
+    ...mapGetters({
+      isAdmin: 'auth/isAdmin'
+    }),
+    baseRoute () {
+      return this.isAdmin ? '/workdays' : '/job'
     }
   },
   methods: {
@@ -68,7 +76,7 @@ export default {
         if (outcome) {
           try {
             await this.authLogin(this.user)
-            this.$router.push('/users')
+            this.$router.push(this.baseRoute)
           } catch (err) {
             this.$q.notify({
               message: err.response.data.message.includes('Ошибка БД') ? 'Ошибка БД. Попробуйте ещё раз позже' : 'Ошибка авторизации. Неверный логин или пароль',
