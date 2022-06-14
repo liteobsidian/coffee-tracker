@@ -5,7 +5,7 @@ export const LIST = `
   with last_dates_inventory as (
     select max(date) as date, division_id
     from inventory
-    where date < current_date
+    where date < $1
     group by division_id
   ),
        accept_requests_remains as (
@@ -28,6 +28,6 @@ export const LIST = `
          left join inventory d on c.date = d.date and d.division_id = a.id
          left join inventory_content e on d.id = e.inventory_id and b.nomenclature_id = e.nomenclature_id
          left join accept_requests_remains f on a.id = f.division_id and b.nomenclature_id = f.nomenclature_id
-  where $1 = '' or a.name~*$1
+  where $2 = '' or a.name~*$2
   order by coalesce(f.last_date, d.date) desc, a.name, bc.name
 `
